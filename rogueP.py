@@ -1,4 +1,8 @@
 import libtcodpy as libtcod
+import objects.entity
+import objects.attribute
+import objects.event
+import objects.behavior
 
 SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50
