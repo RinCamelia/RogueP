@@ -1,8 +1,8 @@
-import behavior, entity, attribute, enum
-
-EVENT_TYPES = enum.Enum(["Base"])
+from enum import Enum
+class EventTag(Enum):
+	Base = 1
 
 class Event:
-	def __init__(self, type=EVENT_TYPES.Base, *args):
+	def __init__(self, type=EventTag.Base, args={}):
 		self.args = args
 		self.type = type
