@@ -23,7 +23,7 @@ class KeyboardInputBehavior(Behavior):
 			self.update_player_pos(entity.get_attribute(attribute.AttributeTag.WorldPosition))
 
 	def update_player_pos(self, player_position):
-		key = libtcod.console_wait_for_keypress(True)
+		key = libtcod.console_wait_for_keypress(True) #libtcod.console_check_for_keypress
 		if key.vk == libtcod.KEY_UP:
 			player_position.data["y"] -= 1
 
@@ -48,4 +48,4 @@ class DrawBehavior(Behavior):
 					raise LookupError
 				libtcod.console_put_char(0, position_info.data["x"], position_info.data["y"], draw_info.data["character"], libtcod.BKGND_NONE)
 				libtcod.console_flush()
-				#libtcod.console_put_char(0, position_info.data["x"], position_info.data["y"], ' ', libtcod.BKGND_NONE)
+				libtcod.console_put_char(0, position_info.data["x"], position_info.data["y"], ' ', libtcod.BKGND_NONE)
