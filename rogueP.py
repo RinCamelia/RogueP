@@ -1,19 +1,16 @@
 import libtcodpy as libtcod
-import objects.entity
-import objects.attribute
 from objects.attribute import Attribute, AttributeTag
-import objects.event
-import objects.behavior
-import behavior_manager
+from objects.entity import Entity
+from behavior_manager import BehaviorManager
 
 SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50
-LIMIT_FPS = 20
-BEHAVIOR_MANAGER = behavior_manager.BehaviorManager()
-ENTITIES = []
+limit_fps = 10
+behavior_manager = BehaviorManager()
+entities = []
 
-ENTITIES.append(
-	objects.entity.Entity([
+entities.append(
+	Entity([
 			Attribute(AttributeTag.Player),
 			Attribute(AttributeTag.Visible),
 			Attribute(AttributeTag.WorldPosition, {'x': 20, 'y': 20}),
@@ -24,6 +21,7 @@ ENTITIES.append(
 
 libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'RogueP pre-dev', False)
+libtcod.sys_set_fps(limit_fps)
 
 def handle_keys():
 	global playerx, playery
@@ -36,7 +34,7 @@ def handle_keys():
 
 while not libtcod.console_is_window_closed():
 
-	BEHAVIOR_MANAGER.update_behaviors(ENTITIES)
+	behavior_manager.update_behaviors(entities)
 
 	exit = handle_keys()
 	if exit:
