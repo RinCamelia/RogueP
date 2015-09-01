@@ -2,3 +2,4 @@ TODO
 
 *Build basic UI stack code allowing game entry and supporting potential submenus
 *Build input state manager (sigh...)
+*Build basic update/draw loop

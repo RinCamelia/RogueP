@@ -1,0 +1,26 @@
+Scratch/Ideas
+
+UI stack manager
+
+
+main menu
+-> player picks new/continue
+-> 
+game
+main menu
+
+UIFrame
+UI
+
+
+
+
+Game flow:
+
+Cpu cache -> find flush.so -> enter bus -> fight to ram
+
+RAM -> find disk
+
+Classes
+Virus
+Packet (:D)

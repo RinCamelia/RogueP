@@ -11,30 +11,21 @@ class Behavior:
 	def apply_to_all_entities(self, entities):
 		pass
 
-	def handle_event(self, event):
+	def handle_event(self, event, entities):
 		pass
 
 
 
-class KeyboardInputBehavior(Behavior):
+class PlayerMovementBehavior(Behavior):
 
-	def apply_to_entity(self, entity):
-		if entity.get_attribute(attribute.AttributeTag.Player):
-			self.update_player_pos(entity.get_attribute(attribute.AttributeTag.WorldPosition))
+	def handle_event(self, event, entities):
+		for entity in entities:
+			if entity.get_attribute(attribute.AttributeTag.Player):
+				self.update_player_pos(entity.get_attribute(attribute.AttributeTag.WorldPosition), event.data)
 
-	def update_player_pos(self, player_position):
-		key = libtcod.console_wait_for_keypress(True) #libtcod.console_check_for_keypress
-		if key.vk == libtcod.KEY_UP:
-			player_position.data["y"] -= 1
-
-		if key.vk == libtcod.KEY_DOWN:
-			player_position.data["y"] += 1
-
-		if key.vk == libtcod.KEY_LEFT:
-			player_position.data["x"] -= 1
-
-		if key.vk == libtcod.KEY_RIGHT:
-			player_position.data["x"] += 1
+	def update_player_pos(self, player_position, position_delta):
+		player_position.data["x"] += position_delta["x"]
+		player_position.data["y"] += position_delta["y"]
 
 class DrawBehavior(Behavior):
 
