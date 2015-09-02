@@ -10,6 +10,7 @@ class MenuGame(Menu):
 
 	def __init__(self, width, height):
 		Menu.__init__(self, width, height)
+		#currently hardcoded to test player movement
 		self.behavior_manager = BehaviorManager()
 		self.entities = []
 		self.entities.append(
@@ -20,9 +21,11 @@ class MenuGame(Menu):
 					Attribute(AttributeTag.CharacterDrawInfo, {'character': '@'})
 				])
 			)
+		self.last_key = libtcod.console_check_for_keypress(True)
 
 	def update(self, delta):
-		key = libtcod.console_check_for_keypress(True) #libtcod.console_check_for_keypress
+		self.last_key = self.current_key
+	    self.current_key = libtcod.console_check_for_keypress(True) #libtcod.console_check_for_keypress
 
 		if key.c == ord("q"):
 			print("should be escaping")
