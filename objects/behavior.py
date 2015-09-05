@@ -4,6 +4,7 @@ from event import EventTag
 from attribute import Attribute, AttributeTag
 from entity import Entity
 from math import sqrt, fabs
+from ui.frame_world import FrameWorld
 
 class Behavior:
 	def __init__(self, manager):
@@ -47,14 +48,13 @@ class PlayerMovementBehavior(Behavior):
 						break
 					if mem.id < remove_square_id or remove_square_id == -1:
 						remove_square_id = mem.id
-						
-				self.manager.remove_entity_by_id(remove_square_id)
 
+				self.manager.remove_entity_by_id(remove_square_id)
 			self.manager.add_entity(Entity([
 					Attribute(AttributeTag.ProgramMemory, {'parent_id': player.id}),
 					Attribute(AttributeTag.Visible),
 					Attribute(AttributeTag.WorldPosition, {'value': player_position.data['value']}),
-					Attribute(AttributeTag.CharacterDrawInfo, {'character': 197})
+					Attribute(AttributeTag.DrawInfo, {'draw_func': FrameWorld.draw_entity_as_memory})
 				]))
 
 			player_position.data['value'] = new_player_position

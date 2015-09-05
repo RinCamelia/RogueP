@@ -4,10 +4,11 @@ class AttributeTag(Enum):
 	Base = 1
 	Player = 2
 	WorldPosition = 3
-	CharacterDrawInfo = 4
+	DrawInfo = 4
 	Visible = 5
 	MaxProgramSize = 6,
-	ProgramMemory = 7
+	ProgramMemory = 7,
+	
 
 class Attribute:
 	def __str__(self):

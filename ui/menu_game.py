@@ -16,13 +16,14 @@ class MenuGame(Menu):
 		#currently hardcoded to test player movement
 		self.behavior_manager = EntityManager()
 		self.frame_manager = FrameManager()
-		self.frame_manager.add_frame(FrameWorld(width, height, self.behavior_manager))
+		world_frame = FrameWorld(width, height, self.behavior_manager)
+		self.frame_manager.add_frame(world_frame)
 		self.behavior_manager.add_entity(Entity([
 					Attribute(AttributeTag.Player),
 					Attribute(AttributeTag.Visible),
 					Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
 					Attribute(AttributeTag.MaxProgramSize, {'value': 20}),
-					Attribute(AttributeTag.CharacterDrawInfo, {'character': 64})
+					Attribute(AttributeTag.DrawInfo, {'character': 64, 'draw_func': FrameWorld.draw_entity_as_character})
 				])
 			)
 
