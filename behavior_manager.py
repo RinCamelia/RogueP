@@ -8,7 +8,6 @@ class EntityManager:
 		self.entities = []
 		self.newest_entity_id = 0
 		#arguably bad but i don't want to go digging in introspection just yet to figure out how to make this automatic
-		#self.behaviors.add(objects.behavior.DrawBehavior(self))
 		self.behaviors.add(objects.behavior.PlayerMovementBehavior(self))
 
 	def get_new_entity_id(self):
@@ -18,6 +17,12 @@ class EntityManager:
 	def add_entity(self, entity):
 		entity.id = self.get_new_entity_id()
 		self.entities.append(entity)
+
+	def get_entity_by_id(self, id):
+		filtered = filter(lambda ent: ent.id == id, self.entities)
+		if filtered != []:
+			return filtered[0]
+		raise IndexError( 'attempted to get nonexistent entity with ID ' + str(id))
 
 	def remove_entity_by_id(self, id):
 		self.entities = filter(lambda ent: ent.id != id, self.entities)	

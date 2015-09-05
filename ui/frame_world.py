@@ -49,15 +49,16 @@ class FrameWorld(Frame):
 		has_east_connection = False
 		has_west_connection = False
 		render_character = 80
+		entity_position = entity.get_attribute(AttributeTag.WorldPosition).data['value']
+
 		our_parent_id = entity.get_attribute(AttributeTag.ProgramMemory).data['parent_id']
+		our_parent = self.entity_manager.get_entity_by_id(our_parent_id)
 		for other in self.entity_manager.entities:
 			is_memory = other.get_attribute(AttributeTag.ProgramMemory)	
 			if is_memory and is_memory.data['parent_id'] == our_parent_id:
-				entity_position = entity.get_attribute(AttributeTag.WorldPosition).data['value']
 				other_position = other.get_attribute(AttributeTag.WorldPosition).data['value']
 				if entity_position.get_distance(other_position) == 1:
 					delta = entity_position - other_position
-					print delta
 					if delta == Vec2d(0, -1):
 						has_south_connection = True
 					elif delta == Vec2d(0, 1):
@@ -66,6 +67,17 @@ class FrameWorld(Frame):
 						has_east_connection = True
 					elif delta == Vec2d(1, 0):
 						has_west_connection = True
+		our_parent_delta = entity_position - (our_parent.get_attribute(AttributeTag.WorldPosition).data['value'])
+		if our_parent_delta == Vec2d(0, -1):
+			has_south_connection = True
+		elif our_parent_delta == Vec2d(0, 1):
+			has_north_connection = True
+		elif our_parent_delta == Vec2d(-1, 0):
+			has_east_connection = True
+		elif our_parent_delta == Vec2d(1, 0):
+			has_west_connection = True
+
+		#TODO: clean up this unholy abomination of ifs, possibly with an enum and one straight shot at calculating this info
 		# please consult https://en.wikipedia.org/wiki/Code_page_437 for what these character codes are
 		if (has_north_connection or has_south_connection or has_north_connection and has_south_connection) and not (has_east_connection or has_west_connection):
 			render_character = 179
