@@ -1,19 +1,34 @@
+import libtcodpy as libtcod
 import objects.behavior, objects.event, objects.entity, objects.attribute
+from objects.attribute import AttributeTag
 
-class BehaviorManager:
+class EntityManager:
 	def __init__(self):
 		self.behaviors = set()
+		self.entities = []
+		self.newest_entity_id = 0
 		#arguably bad but i don't want to go digging in introspection just yet to figure out how to make this automatic
-		self.behaviors.add(objects.behavior.DrawBehavior(self))
+		#self.behaviors.add(objects.behavior.DrawBehavior(self))
 		self.behaviors.add(objects.behavior.PlayerMovementBehavior(self))
 
-	def handle_event(self, event, entities):
-		for beh in self.behaviors:
-			beh.handle_event(event, entities)
+	def get_new_entity_id(self):
+		self.newest_entity_id += 1
+		return self.newest_entity_id
 
-	def update_behaviors(self, entities):
-		self.entities = entities
+	def add_entity(self, entity):
+		entity.id = self.get_new_entity_id()
+		self.entities.append(entity)
+
+	def remove_entity_by_id(self, id):
+		self.entities = filter(lambda ent: ent.id != id, self.entities)	
+
+	def handle_event(self, event):
+
+		for beh in self.behaviors:
+			beh.handle_event(event)
+
+	def update_behaviors(self, delta):
 		for beh in self.behaviors:
 			for entity in self.entities:
 				beh.apply_to_entity(entity)
-			beh.apply_to_all_entities(self.entities)
+			beh.apply_to_all_entities()

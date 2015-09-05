@@ -1,4 +1,8 @@
+from attribute import AttributeTag
+
 class Entity:
+
+
 	def __init__(self, attributes=[]):
 		self.attributes = attributes
 

@@ -1,7 +1,6 @@
 import libtcodpy as libtcod
 from objects.attribute import Attribute, AttributeTag
 from objects.entity import Entity
-from behavior_manager import BehaviorManager
 from ui.menu import Menu
 from ui.menu_main import MenuMain
 from ui.menu_manager import MenuManager
@@ -9,7 +8,7 @@ from ui.menu_manager import MenuManager
 
 screen_width = 80
 screen_height = 50
-limit_fps = 20
+limit_fps = 30
 menu_manager = MenuManager(MenuMain(screen_width, screen_height))
 
 libtcod.console_disable_keyboard_repeat()
@@ -20,5 +19,5 @@ libtcod.sys_set_fps(limit_fps)
 
 while not libtcod.console_is_window_closed():
 	#behavior_manager.update_behaviors(entities)
-	if not menu_manager.loop(0):
+	if not menu_manager.loop(round(libtcod.sys_get_last_frame_length()*1000)):
 		break
