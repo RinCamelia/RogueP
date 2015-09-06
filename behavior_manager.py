@@ -1,7 +1,6 @@
 import libtcodpy as libtcod
 import objects.behavior
 from objects.attribute import AttributeTag
-from objects.action import Action, ActionTag
 
 class EntityManager:
 	def __init__(self):
@@ -23,7 +22,7 @@ class EntityManager:
 		filtered = filter(lambda ent: ent.id == id, self.entities)
 		if filtered != []:
 			return filtered[0]
-		raise IndexError( 'attempted to get nonexistent entity with ID ' + str(id))
+		raise IndexError('attempted to get nonexistent entity with ID ' + str(id))
 
 	def remove_entity_by_id(self, id):
 		self.entities = filter(lambda ent: ent.id != id, self.entities)	

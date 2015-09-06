@@ -1,7 +1,4 @@
 import libtcodpy as libtcod
-from objects.attribute import Attribute, AttributeTag
-from objects.entity import Entity
-from ui.menu import Menu
 from ui.menu_main import MenuMain
 from ui.menu_manager import MenuManager
 

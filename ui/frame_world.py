@@ -13,8 +13,8 @@ from frame_manager import FrameState
 # right now scrapes game state directly to draw things - may (and probably will) in the future harvest UI events to update the UI (pulling info only when player scans, etc)
 class FrameWorld(Frame):
 
-	def __init__(self, console_width, console_height, entity_manager):
-		Frame.__init__(self, console_width, console_height)
+	def __init__(self, root_console_width, root_console_height, entity_manager):
+		Frame.__init__(self, root_console_width, root_console_height)
 		self.entity_manager = entity_manager
 
 	def update(self, delta):
