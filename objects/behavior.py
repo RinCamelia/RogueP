@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 from vec2d import Vec2d
-from event import EventTag
+from event import ActionTag
 from attribute import Attribute, AttributeTag
 from entity import Entity
 from math import sqrt, fabs
@@ -16,7 +16,7 @@ class Behavior:
 	def apply_to_all_entities(self):
 		pass
 
-	def handle_event(self, event):
+	def handle_action(self, action):
 		pass
 
 def is_player_memory(player, ent): 
@@ -29,11 +29,11 @@ def is_player_memory(player, ent):
 # TODO: pull this code out into a more generic one for programs
 class PlayerMovementBehavior(Behavior):
 
-	def handle_event(self, event):
-		if event.type == EventTag.PlayerMovement:
+	def handle_action(self, action):
+		if action.type == ActionTag.PlayerMovement:
 			player = filter(lambda ent:ent.get_attribute(AttributeTag.Player), self.manager.entities)[0]
 			player_position = player.get_attribute(AttributeTag.WorldPosition)
-			new_player_position = player_position.data['value'] + event.data['value']
+			new_player_position = player_position.data['value'] + action.data['value']
 			# TODO make it check the parent program
 
 			player_program_squares = filter(lambda ent: is_player_memory(player, ent), self.manager.entities)

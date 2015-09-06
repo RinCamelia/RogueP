@@ -24,3 +24,9 @@ RAM -> find disk
 Classes
 Virus
 Packet (:D)
+
+player hits input -> filtered out into what to do
+if movement command, planned input is displayed and added to action queue
+if library command, UI is notified to display appropriate menu and input is filtered down to active command set
+if execute command, input is turned off and commands are executed in input order until gone
+if abort command, action queue is cleared

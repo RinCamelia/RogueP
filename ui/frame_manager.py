@@ -19,7 +19,7 @@ class FrameManager:
 				'visible':True
 			})
 
-	def handle_input_event(self, event):
+	def handle_input_Action(self, Action):
 		pass
 
 	def update(self, delta):

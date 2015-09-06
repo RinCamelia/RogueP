@@ -1,6 +1,7 @@
 import libtcodpy as libtcod
-import objects.behavior, objects.event, objects.entity, objects.attribute
+import objects.behavior
 from objects.attribute import AttributeTag
+from objects.event import Action, ActionTag
 
 class EntityManager:
 	def __init__(self):
@@ -27,10 +28,9 @@ class EntityManager:
 	def remove_entity_by_id(self, id):
 		self.entities = filter(lambda ent: ent.id != id, self.entities)	
 
-	def handle_event(self, event):
-
+	def handle_action(self, action):
 		for beh in self.behaviors:
-			beh.handle_event(event)
+			beh.handle_action(action)
 
 	def update_behaviors(self, delta):
 		for beh in self.behaviors:

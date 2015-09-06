@@ -3,7 +3,6 @@ from menu import Menu
 from menu_manager import MenuStatus
 from objects.attribute import Attribute, AttributeTag
 from objects.entity import Entity
-from objects.event import Event, EventTag
 from frame import Frame
 from vec2d import Vec2d
 from frame_manager import FrameState

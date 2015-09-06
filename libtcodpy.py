@@ -16,7 +16,7 @@
 # THIS SOFTWARE IS PROVIDED BY JICE AND MINGOS ``AS IS'' AND ANY
 # EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL JICE OR MINGOS BE LIABLE FOR ANY
+# DISCLAIMED. IN NO Action SHALL JICE OR MINGOS BE LIABLE FOR ANY
 # DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 # (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 # LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -505,7 +505,7 @@ def BKGND_ALPHA(a):
 def BKGND_ADDALPHA(a):
     return BKGND_ADDA | (int(a * 255) << 8)
 
-# non blocking key events types
+# non blocking key Actions types
 KEY_PRESSED = 1
 KEY_RELEASED = 2
 # key codes
@@ -1031,20 +1031,20 @@ def sys_register_SDL_renderer(callback):
     sdl_renderer_func = SDL_RENDERER_FUNC(callback)
     _lib.TCOD_sys_register_SDL_renderer(sdl_renderer_func)
 
-# events
-EVENT_KEY_PRESS=1
-EVENT_KEY_RELEASE=2
-EVENT_KEY=EVENT_KEY_PRESS|EVENT_KEY_RELEASE
-EVENT_MOUSE_MOVE=4
-EVENT_MOUSE_PRESS=8
-EVENT_MOUSE_RELEASE=16
-EVENT_MOUSE=EVENT_MOUSE_MOVE|EVENT_MOUSE_PRESS|EVENT_MOUSE_RELEASE
-EVENT_ANY=EVENT_KEY|EVENT_MOUSE
-def sys_check_for_event(mask,k,m) :
-    return _lib.TCOD_sys_check_for_event(c_int(mask),byref(k),byref(m))
+# Actions
+Action_KEY_PRESS=1
+Action_KEY_RELEASE=2
+Action_KEY=Action_KEY_PRESS|Action_KEY_RELEASE
+Action_MOUSE_MOVE=4
+Action_MOUSE_PRESS=8
+Action_MOUSE_RELEASE=16
+Action_MOUSE=Action_MOUSE_MOVE|Action_MOUSE_PRESS|Action_MOUSE_RELEASE
+Action_ANY=Action_KEY|Action_MOUSE
+def sys_check_for_Action(mask,k,m) :
+    return _lib.TCOD_sys_check_for_Action(c_int(mask),byref(k),byref(m))
 
-def sys_wait_for_event(mask,k,m,flush) :
-    return _lib.TCOD_sys_wait_for_event(c_int(mask),byref(k),byref(m),c_bool(flush))
+def sys_wait_for_Action(mask,k,m,flush) :
+    return _lib.TCOD_sys_wait_for_Action(c_int(mask),byref(k),byref(m),c_bool(flush))
 
 ############################
 # line module

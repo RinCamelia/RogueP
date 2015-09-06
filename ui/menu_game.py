@@ -5,7 +5,7 @@ from behavior_manager import EntityManager
 from objects.attribute import Attribute, AttributeTag
 from objects.entity import Entity
 from frame_action_clock import FrameActionClock
-from objects.event import Event, EventTag
+from objects.event import Action, ActionTag
 from frame_manager import FrameManager
 from frame_world import FrameWorld
 from vec2d import Vec2d
@@ -55,16 +55,16 @@ class MenuGame(Menu):
 
 
 	def add_move_up(self):
-		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, -1)}))
+		self.queued_actions.append(Action(ActionTag.PlayerMovement, {'value': Vec2d(0, -1)}))
 
 	def add_move_down(self):
-		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, 1)}))
+		self.queued_actions.append(Action(ActionTag.PlayerMovement, {'value': Vec2d(0, 1)}))
 
 	def add_move_left(self):
-		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(-1, 0)}))
+		self.queued_actions.append(Action(ActionTag.PlayerMovement, {'value': Vec2d(-1, 0)}))
 
 	def add_move_right(self):
-		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(1, 0)}))
+		self.queued_actions.append(Action(ActionTag.PlayerMovement, {'value': Vec2d(1, 0)}))
 
 	def execute_commands(self):
 		self.game_state = GameState.Executing
@@ -97,9 +97,9 @@ class MenuGame(Menu):
 				self.execute_timer += delta
 				if self.execute_timer >= self.action_execute_delay:
 					self.execute_timer = 0
-					event = self.queued_actions.pop()
-					print 'executing event ' + str(event)
-					self.behavior_manager.handle_event(event)
+					Action = self.queued_actions.pop()
+					print 'executing Action ' + str(Action)
+					self.behavior_manager.handle_action(Action)
 					self.queued_action_count -= 1
 			else:
 				print 'queue empty, ending execution'
