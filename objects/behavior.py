@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 from vec2d import Vec2d
-from event import ActionTag
+from action import ActionTag
 from attribute import Attribute, AttributeTag
 from entity import Entity
 from math import sqrt, fabs

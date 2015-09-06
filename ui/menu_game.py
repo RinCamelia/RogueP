@@ -5,7 +5,7 @@ from behavior_manager import EntityManager
 from objects.attribute import Attribute, AttributeTag
 from objects.entity import Entity
 from frame_action_clock import FrameActionClock
-from objects.event import Action, ActionTag
+from objects.action import Action, ActionTag
 from frame_manager import FrameManager
 from frame_world import FrameWorld
 from vec2d import Vec2d

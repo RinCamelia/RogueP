@@ -1,7 +1,7 @@
 import libtcodpy as libtcod
 import objects.behavior
 from objects.attribute import AttributeTag
-from objects.event import Action, ActionTag
+from objects.action import Action, ActionTag
 
 class EntityManager:
 	def __init__(self):
