@@ -10,6 +10,7 @@ from frame_manager import FrameState
 
 # UI drawing class for the actual game world, renders to the subset of the screen that is not UI
 # or will, anyway, just draws right to the console atm
+# right now scrapes game state directly to draw things - may (and probably will) in the future harvest UI events to update the UI (pulling info only when player scans, etc)
 class FrameWorld(Frame):
 
 	def __init__(self, console_width, console_height, entity_manager):

@@ -11,7 +11,7 @@ class Frame:
 	def update(self, delta):
 		pass
 
-	def handle_key_input(self, key):
+	def handle_ui_event(self, key):
 		pass
 
 	def draw(self):

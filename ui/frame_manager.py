@@ -19,8 +19,9 @@ class FrameManager:
 				'visible':True
 			})
 
-	def handle_input_Action(self, Action):
-		pass
+	def handle_ui_event(self, event):
+		for frame in self.frames:
+			frame['frame'].handle_ui_event(event)
 
 	def update(self, delta):
 		for frame in self.frames:

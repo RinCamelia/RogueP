@@ -10,6 +10,7 @@ from frame_manager import FrameManager
 from frame_world import FrameWorld
 from vec2d import Vec2d
 from enum import Enum
+from ui_event import UIEvent, UIEventType
 
 class GameState(Enum):
 	Executing = 1
@@ -19,6 +20,7 @@ class MenuGame(Menu):
 
 	def __init__(self, console_width, console_height):
 		Menu.__init__(self, console_width, console_width)
+		max_actions = 5
 		#currently hardcoded to test player movement
 		self.behavior_manager = EntityManager()
 		self.frame_manager = FrameManager(self)
@@ -26,7 +28,7 @@ class MenuGame(Menu):
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
 		self.behavior_manager.add_entity(Entity([
-					Attribute(AttributeTag.Player, {'max_actions_per_cycle': 5}),
+					Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
 					Attribute(AttributeTag.Visible),
 					Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
 					Attribute(AttributeTag.MaxProgramSize, {'value': 20}),
@@ -42,6 +44,9 @@ class MenuGame(Menu):
 		self.execute_timer = 0
 		self.queued_action_count = 0
 
+		# generate an initial set of UI events to set up the UI
+		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionCountChange, {'current_action_count': 0, 'max_actions': max_actions}))
+
 
 	def flag_for_exit(self):
 		self.flagged_exit = True
@@ -52,6 +57,7 @@ class MenuGame(Menu):
 		if self.queued_action_count < player_max_actions:
 			self.queued_action_count += 1
 			command(self)
+			self.send_action_update_event()
 
 
 	def add_move_up(self):
@@ -75,6 +81,8 @@ class MenuGame(Menu):
 
 	def clear_commands(self):
 		self.queued_actions = []
+		self.queued_action_count = 0
+		self.send_action_update_event()
 
 	def update(self, delta):
 		key = libtcod.console_check_for_keypress(True) #libtcod.console_check_for_keypress
@@ -101,14 +109,21 @@ class MenuGame(Menu):
 					print 'executing Action ' + str(Action)
 					self.behavior_manager.handle_action(Action)
 					self.queued_action_count -= 1
+					self.send_action_update_event()
 			else:
 				print 'queue empty, ending execution'
+				self.send_action_update_event()
 				self.game_state = GameState.TakingInput
 
 		if self.flagged_exit:
 			return MenuStatus.Exit
 			
 		return MenuStatus.Okay
+
+	def send_action_update_event(self):
+		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.behavior_manager.entities)[0]
+		player_max_actions = player.get_attribute(AttributeTag.Player).data['max_actions_per_cycle']
+		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionCountChange, {'current_action_count': self.queued_action_count, 'max_actions': player_max_actions}))
 
 	def draw(self):
 		self.frame_manager.draw()
