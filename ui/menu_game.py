@@ -26,7 +26,7 @@ class MenuGame(Menu):
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
 		self.behavior_manager.add_entity(Entity([
-					Attribute(AttributeTag.Player),
+					Attribute(AttributeTag.Player, {'max_actions_per_cycle': 5}),
 					Attribute(AttributeTag.Visible),
 					Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
 					Attribute(AttributeTag.MaxProgramSize, {'value': 20}),
