@@ -35,7 +35,6 @@ class FrameWorld(Frame):
 					draw_info.data['draw_func'](self, entity)
 				else:
 					libtcod.console_put_char(0, position_info.x, position_info.y, '?', libtcod.BKGND_NONE) #render as an unknown character
-		libtcod.console_flush()
 
 	def draw_entity_as_character(self, entity):
 		position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']

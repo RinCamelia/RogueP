@@ -1,4 +1,6 @@
 TODO
 
-*build ui frame framework and learn offscreen consoles
-*build minimal UI including gameplay
+*Build a simple UI frame for action allocation
+*Build basic action command flow
+*Investigate feasibility of using pickle to save out game state	
+*start pulling character data out into .xp sheets for customizability

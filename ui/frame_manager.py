@@ -33,3 +33,4 @@ class FrameManager:
 		for frame in self.frames:
 			if frame['visible']:
 				frame['frame'].draw()
+		libtcod.console_flush()

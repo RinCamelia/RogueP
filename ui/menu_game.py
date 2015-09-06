@@ -4,10 +4,16 @@ from menu_manager import MenuStatus
 from behavior_manager import EntityManager
 from objects.attribute import Attribute, AttributeTag
 from objects.entity import Entity
+from frame_action_clock import FrameActionClock
 from objects.event import Event, EventTag
 from frame_manager import FrameManager
 from frame_world import FrameWorld
 from vec2d import Vec2d
+from enum import Enum
+
+class GameState(Enum):
+	Executing = 1
+	TakingInput = 2
 
 class MenuGame(Menu):
 
@@ -18,6 +24,7 @@ class MenuGame(Menu):
 		self.frame_manager = FrameManager()
 		world_frame = FrameWorld(width, height, self.behavior_manager)
 		self.frame_manager.add_frame(world_frame)
+		self.frame_manager.add_frame(FrameActionClock(width, height, self.behavior_manager))
 		self.behavior_manager.add_entity(Entity([
 					Attribute(AttributeTag.Player),
 					Attribute(AttributeTag.Visible),
