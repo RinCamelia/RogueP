@@ -12,8 +12,8 @@ from frame_manager import FrameState
 # or will, anyway, just draws right to the console atm
 class FrameWorld(Frame):
 
-	def __init__(self, width, height, entity_manager):
-		Frame.__init__(self, width, height)
+	def __init__(self, console_width, console_height, entity_manager):
+		Frame.__init__(self, console_width, console_height)
 		self.entity_manager = entity_manager
 
 	def update(self, delta):

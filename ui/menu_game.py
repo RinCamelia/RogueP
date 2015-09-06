@@ -17,14 +17,14 @@ class GameState(Enum):
 
 class MenuGame(Menu):
 
-	def __init__(self, width, height):
-		Menu.__init__(self, width, height)
+	def __init__(self, console_width, console_height):
+		Menu.__init__(self, console_width, console_width)
 		#currently hardcoded to test player movement
 		self.behavior_manager = EntityManager()
 		self.frame_manager = FrameManager()
-		world_frame = FrameWorld(width, height, self.behavior_manager)
+		world_frame = FrameWorld(console_width, console_height, self.behavior_manager)
 		self.frame_manager.add_frame(world_frame)
-		self.frame_manager.add_frame(FrameActionClock(width, height, self.behavior_manager))
+		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
 		self.behavior_manager.add_entity(Entity([
 					Attribute(AttributeTag.Player),
 					Attribute(AttributeTag.Visible),

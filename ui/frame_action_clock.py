@@ -14,8 +14,8 @@ import gzip
 # or will, anyway, just draws right to the console atm
 class FrameActionClock(Frame):
 
-	def __init__(self, width, height, entity_manager):
-		Frame.__init__(self, width, height)
+	def __init__(self, console_width, console_height, entity_manager):
+		Frame.__init__(self, console_width, console_height)
 		self.entity_manager = entity_manager
 		console_bg_xp = gzip.open('assets\\ui\\ui_frame_actionclock_bg.xp')
 		bg_parsed = xp_loader.load_xp_string(console_bg_xp.read())
