@@ -9,14 +9,18 @@ class FrameState(Enum):
 
 class FrameManager:
 
-	def __init__(self):
+	def __init__(self, parent_menu):
 		self.frames = []
+		self.parent_menu = parent_menu
 
 	def add_frame(self, frame):
 		self.frames.append({
 				'frame':frame,
 				'visible':True
 			})
+
+	def handle_input_event(self, event):
+		pass
 
 	def update(self, delta):
 		for frame in self.frames:

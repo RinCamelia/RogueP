@@ -21,7 +21,7 @@ class MenuGame(Menu):
 		Menu.__init__(self, console_width, console_width)
 		#currently hardcoded to test player movement
 		self.behavior_manager = EntityManager()
-		self.frame_manager = FrameManager()
+		self.frame_manager = FrameManager(self)
 		world_frame = FrameWorld(console_width, console_height, self.behavior_manager)
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
@@ -34,25 +34,78 @@ class MenuGame(Menu):
 				])
 			)
 
+		self.queued_commands = []
+		self.input_state = GameState.TakingInput
+		self.flagged_exit = False
+		#delay in ms between executing commands
+		self.command_execute_delay = 250
+		self.execute_timer = 0
+		self.queued_action_count = 0
+
+
+	def flag_for_exit(self):
+		self.flagged_exit = True
+
+	def checked_command_wrapper(self, command):
+		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.behavior_manager.entities)[0]
+		player_max_actions = player.get_attribute(AttributeTag.Player).data['max_actions_per_cycle']
+		if self.queued_action_count < player_max_actions:
+			self.queued_action_count += 1
+			command(self)
+
+
+	def add_move_up(self):
+		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, -1)}))
+
+	def add_move_down(self):
+		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, 1)}))
+
+	def add_move_left(self):
+		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(-1, 0)}))
+
+	def add_move_right(self):
+		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(1, 0)}))
+
+	def execute_commands(self):
+		self.input_state = GameState.Executing
+		# reverse the list; the commands were stacked, so the first one in the list is the first one to execute. This lets me treat the list as a stack and pop each command off
+		self.queued_commands.reverse()
+		self.execute_timer = 0
+		print 'beginning queued commands execution'
+
+	def clear_commands(self):
+		self.queued_commands = []
+
 	def update(self, delta):
 		key = libtcod.console_check_for_keypress(True) #libtcod.console_check_for_keypress
 
-		if key.vk == libtcod.KEY_UP:
-			self.behavior_manager.handle_event(Event(EventTag.PlayerMovement, {'value': Vec2d(0, -1)}))
+		if self.input_state == GameState.TakingInput:
 
-		if key.vk == libtcod.KEY_DOWN:
-			self.behavior_manager.handle_event(Event(EventTag.PlayerMovement, {'value': Vec2d(0, 1)}))
+			if key.vk != libtcod.KEY_CHAR:
+				if key.vk in contextual_input_tree:
+					contextual_input_tree[key.vk](self)
+				elif key.vk in global_input_tree:
+					global_input_tree[key.vk](self)
+				# do nothing
+			else:
+				if chr(key.c) in contextual_input_tree:
+					contextual_input_tree[chr(key.c)](self)
+				elif chr(key.c) in global_input_tree:
+					global_input_tree[chr(key.c)](self)
+		elif self.input_state == GameState.Executing:
+			if len(self.queued_commands) > 0:
+				self.execute_timer += delta
+				if self.execute_timer >= self.command_execute_delay:
+					self.execute_timer = 0
+					event = self.queued_commands.pop()
+					print 'executing event ' + str(event)
+					self.behavior_manager.handle_event(event)
+					self.queued_action_count -= 1
+			else:
+				print 'queue empty, ending execution'
+				self.input_state = GameState.TakingInput
 
-		if key.vk == libtcod.KEY_LEFT:
-			self.behavior_manager.handle_event(Event(EventTag.PlayerMovement, {'value': Vec2d(-1, 0)}))
-
-		if key.vk == libtcod.KEY_RIGHT:
-			self.behavior_manager.handle_event(Event(EventTag.PlayerMovement, {'value': Vec2d(1, 0)}))
-
-		self.behavior_manager.update_behaviors(delta)
-		self.frame_manager.update(delta)
-
-		if key.c == ord("q"):
+		if self.flagged_exit:
 			return MenuStatus.Exit
 			
 		return MenuStatus.Okay
@@ -60,3 +113,16 @@ class MenuGame(Menu):
 	def draw(self):
 		self.frame_manager.draw()
 		pass
+
+global_input_tree = {
+	'q': MenuGame.flag_for_exit,
+}
+
+contextual_input_tree = {
+	libtcod.KEY_UP: lambda self: self.checked_command_wrapper(MenuGame.add_move_up),
+	libtcod.KEY_DOWN: lambda self: self.checked_command_wrapper(MenuGame.add_move_down),
+	libtcod.KEY_LEFT: lambda self: self.checked_command_wrapper(MenuGame.add_move_left),
+	libtcod.KEY_RIGHT: lambda self: self.checked_command_wrapper(MenuGame.add_move_right),
+	'e': MenuGame.execute_commands,
+	'a': MenuGame.clear_commands
+}
