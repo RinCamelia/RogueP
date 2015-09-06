@@ -34,11 +34,11 @@ class MenuGame(Menu):
 				])
 			)
 
-		self.queued_commands = []
-		self.input_state = GameState.TakingInput
+		self.queued_actions = []
+		self.game_state = GameState.TakingInput
 		self.flagged_exit = False
 		#delay in ms between executing commands
-		self.command_execute_delay = 250
+		self.action_execute_delay = 250
 		self.execute_timer = 0
 		self.queued_action_count = 0
 
@@ -55,31 +55,31 @@ class MenuGame(Menu):
 
 
 	def add_move_up(self):
-		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, -1)}))
+		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, -1)}))
 
 	def add_move_down(self):
-		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, 1)}))
+		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(0, 1)}))
 
 	def add_move_left(self):
-		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(-1, 0)}))
+		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(-1, 0)}))
 
 	def add_move_right(self):
-		self.queued_commands.append(Event(EventTag.PlayerMovement, {'value': Vec2d(1, 0)}))
+		self.queued_actions.append(Event(EventTag.PlayerMovement, {'value': Vec2d(1, 0)}))
 
 	def execute_commands(self):
-		self.input_state = GameState.Executing
+		self.game_state = GameState.Executing
 		# reverse the list; the commands were stacked, so the first one in the list is the first one to execute. This lets me treat the list as a stack and pop each command off
-		self.queued_commands.reverse()
+		self.queued_actions.reverse()
 		self.execute_timer = 0
 		print 'beginning queued commands execution'
 
 	def clear_commands(self):
-		self.queued_commands = []
+		self.queued_actions = []
 
 	def update(self, delta):
 		key = libtcod.console_check_for_keypress(True) #libtcod.console_check_for_keypress
 
-		if self.input_state == GameState.TakingInput:
+		if self.game_state == GameState.TakingInput:
 
 			if key.vk != libtcod.KEY_CHAR:
 				if key.vk in contextual_input_tree:
@@ -92,18 +92,18 @@ class MenuGame(Menu):
 					contextual_input_tree[chr(key.c)](self)
 				elif chr(key.c) in global_input_tree:
 					global_input_tree[chr(key.c)](self)
-		elif self.input_state == GameState.Executing:
-			if len(self.queued_commands) > 0:
+		elif self.game_state == GameState.Executing:
+			if len(self.queued_actions) > 0:
 				self.execute_timer += delta
-				if self.execute_timer >= self.command_execute_delay:
+				if self.execute_timer >= self.action_execute_delay:
 					self.execute_timer = 0
-					event = self.queued_commands.pop()
+					event = self.queued_actions.pop()
 					print 'executing event ' + str(event)
 					self.behavior_manager.handle_event(event)
 					self.queued_action_count -= 1
 			else:
 				print 'queue empty, ending execution'
-				self.input_state = GameState.TakingInput
+				self.game_state = GameState.TakingInput
 
 		if self.flagged_exit:
 			return MenuStatus.Exit
