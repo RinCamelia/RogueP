@@ -4,7 +4,9 @@ TODO
 *start pulling character data out into .xp sheets for customizability
 *clean up and improve input handling code
 *make a single/simple library (in game concept) and build UI code for display
- *create a library/inventory frame, reposition 
+ *create a library/inventory frame
+ *hard code a single library for now
+ *most, if not all, libraries will require additional world elements to interact with, so this may have to wait for a good deal of time
 *properly offset world frame/action overlay frame from top left
 *decide what model of world grid to use (rooms? blank space? what)
 *make options menu
