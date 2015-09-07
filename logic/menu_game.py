@@ -29,10 +29,10 @@ class MenuGame(Menu):
 		Menu.__init__(self, console_width, console_width)
 		max_actions = 5
 		#currently hardcoded to test player movement
-		self.behavior_manager = self.try_load_savegame()
-		if not self.behavior_manager:
-			self.behavior_manager = BehaviorManager()
-			self.behavior_manager.add_entity(Entity([
+		self.entity_manager = self.try_load_savegame()
+		if not self.entity_manager:
+			self.entity_manager = EntityManager()
+			self.entity_manager.add_entity(Entity([
 						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
 						Attribute(AttributeTag.Visible),
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
@@ -41,10 +41,10 @@ class MenuGame(Menu):
 					])
 				)
 		self.frame_manager = FrameManager(self)
-		world_frame = FrameWorld(console_width, console_height, self.behavior_manager)
+		world_frame = FrameWorld(console_width, console_height, self.entity_manager)
 		self.frame_manager.add_frame(world_frame)
-		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.behavior_manager))
-		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
+		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.entity_manager))
+		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.entity_manager))
 
 		self.queued_actions = []
 		self.game_state = GameState.TakingInput
@@ -106,7 +106,7 @@ class MenuGame(Menu):
 					self.execute_timer = 0
 					action = self.queued_actions.pop()
 					print 'executing Action ' + str(action)
-					self.behavior_manager.handle_action(action)
+					self.entity_manager.handle_action(action)
 					self.queued_action_count -= 1
 					self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': action}))
 			else:
@@ -131,13 +131,13 @@ class MenuGame(Menu):
 
 	def save_current_state(self):
 		save_file = open('world.sav', 'w')
-		pickle.dump(self.behavior_manager, save_file)
+		pickle.dump(self.entity_manager, save_file)
 
 	def flag_for_exit(self):
 		self.flagged_exit = True
 
 	def queue_action(self, action):
-		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.behavior_manager.entities)[0]
+		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.entity_manager.entities)[0]
 		player_max_actions = player.get_attribute(AttributeTag.Player).data['max_actions_per_cycle']
 		action_cost = action.data['cost']
 		if self.queued_action_count + action_cost <= player_max_actions:
@@ -159,7 +159,7 @@ class MenuGame(Menu):
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
 
 	def dump_entities(self):
-		for entity in self.behavior_manager.entities:
+		for entity in self.entity_manager.entities:
 			print entity
 
 global_input_tree = {
