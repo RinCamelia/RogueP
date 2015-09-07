@@ -1,13 +1,8 @@
 import libtcodpy as libtcod
-from logic.menu import Menu
-from logic.menu_manager import MenuStatus
-from model.attribute import Attribute, AttributeTag
-from model.entity import Entity
-from model.action import Action, ActionTag
+from model.attribute import AttributeTag
 from frame import Frame
 from vec2d import Vec2d
-from ui_event import UIEvent, UIEventType
-from frame_manager import FrameState
+from ui_event import UIEventType
 
 # UI drawing class for the actual game world, renders to the subset of the screen that is not UI
 # or will, anyway, just draws right to the console atm
@@ -20,10 +15,6 @@ class FrameActionsOverlay(Frame):
 		self.actions = []
 		libtcod.console_set_default_background(self.console, libtcod.Color(255, 0, 255))
 		libtcod.console_set_key_color(self.console, libtcod.Color(255, 0, 255))
-
-	def update(self, delta):
-		# may need update logic, for now, nothing
-		pass
 
 	def handle_ui_event(self, event):
 		if event.type == UIEventType.ActionQueueAdd:

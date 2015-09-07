@@ -1,12 +1,7 @@
 import libtcodpy as libtcod
-from logic.menu import Menu
-from logic.menu_manager import MenuStatus
-from model.attribute import Attribute, AttributeTag
-from model.entity import Entity
-from model.action import Action, ActionTag
+from model.attribute import AttributeTag
 from frame import Frame
 from vec2d import Vec2d
-from frame_manager import FrameState
 
 # UI drawing class for the actual game world, renders to the subset of the screen that is not UI
 # or will, anyway, just draws right to the console atm

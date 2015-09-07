@@ -1,6 +1,5 @@
 import libtcodpy as libtcod
 from model.behavior import PlayerMovementBehavior
-from model.attribute import AttributeTag
 
 class EntityManager:
 	def __init__(self):

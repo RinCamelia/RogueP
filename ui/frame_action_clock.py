@@ -2,11 +2,12 @@
 from __future__ import division
 
 import libtcodpy as libtcod
-from frame import Frame
-from vec2d import Vec2d
-from ui_event import UIEvent, UIEventType
 import xp_loader
 import gzip
+from vec2d import Vec2d
+
+from frame import Frame
+from ui_event import UIEvent, UIEventType
 
 # UI drawing class for the actual game world, renders to the subset of the screen that is not UI
 # or will, anyway, just draws right to the console atm
