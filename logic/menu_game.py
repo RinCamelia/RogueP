@@ -2,18 +2,22 @@ import libtcodpy as libtcod
 import os
 import pickle
 from menu import Menu
-from menu_manager import MenuStatus
-from behavior_manager import EntityManager
-from objects.attribute import Attribute, AttributeTag
-from objects.entity import Entity
-from frame_action_clock import FrameActionClock
-from objects.action import Action, ActionTag
-from frame_manager import FrameManager
-from frame_world import FrameWorld
-from frame_actions_overlay import FrameActionsOverlay
-from vec2d import Vec2d
 from enum import Enum
-from ui_event import UIEvent, UIEventType
+from vec2d import Vec2d
+from entity_manager import EntityManager
+
+from menu_manager import MenuStatus
+
+from model.attribute import Attribute, AttributeTag
+from model.entity import Entity
+from model.action import Action, ActionTag
+
+
+from ui.frame_manager import FrameManager
+from ui.ui_event import UIEvent, UIEventType
+from ui.frame_world import FrameWorld
+from ui.frame_actions_overlay import FrameActionsOverlay
+from ui.frame_action_clock import FrameActionClock
 
 class GameState(Enum):
 	Executing = 1
@@ -56,45 +60,9 @@ class MenuGame(Menu):
 		# generate an initial set of UI events to set up the UI
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueMaxActionsChange, {'max_actions': max_actions}))
 
-	def try_load_file(self):
-		if not os.path.isfile('world.sav'):
-			return False
-		save_file = open('world.sav', 'r')
-		return pickle.load(save_file)
-
-	def save_current_state(self):
-		save_file = open('world.sav', 'w')
-		pickle.dump(self.behavior_manager.entities, save_file)
-
-
-	def flag_for_exit(self):
-		self.flagged_exit = True
-
-	def queue_action(self, action):
-		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.behavior_manager.entities)[0]
-		player_max_actions = player.get_attribute(AttributeTag.Player).data['max_actions_per_cycle']
-		action_cost = action.data['cost']
-		if self.queued_action_count + action_cost <= player_max_actions:
-			self.queued_action_count += action_cost
-			self.queued_actions.append(action)
-			self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueAdd, {'action': action}))
-
-
-	def execute_queued_actions(self):
-		self.game_state = GameState.Executing
-		# reverse the list; the commands are in sequential order, so the first one in the list is the first one to execute. This lets me treat the list as a stack and pop each command off
-		self.queued_actions.reverse()
-		self.execute_timer = 0
-		print 'beginning queued commands execution'
-
-	def clear_queued_actions(self):
-		self.queued_actions = []
-		self.queued_action_count = 0
-		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
-
 	def update(self, delta):
 		#blind isinstance(thing, Action) doesn't work because Python looks for a relevant local variable, not to imports
-		import objects.action
+		import model.action
 		key = libtcod.console_check_for_keypress(True) #libtcod.console_check_for_keypress
 
 		if self.game_state == GameState.TakingInput:
@@ -106,7 +74,7 @@ class MenuGame(Menu):
 					if hasattr(contextual_input_tree[key.vk], ('__call__')):
 						contextual_input_tree[key.vk](self)
 
-					elif isinstance(contextual_input_tree[key.vk], objects.action.Action):
+					elif isinstance(contextual_input_tree[key.vk], model.action.Action):
 						self.queue_action(contextual_input_tree[key.vk])
 
 				elif key.vk in global_input_tree:
@@ -114,7 +82,7 @@ class MenuGame(Menu):
 					if hasattr(global_input_tree[key.vk], ('__call__')):
 						global_input_tree[key.vk](self)
 
-					elif isinstance(global_input_tree[key.vk], objects.action.Action):
+					elif isinstance(global_input_tree[key.vk], model.action.Action):
 						self.queue_action(global_input_tree[key.vk])
 				# do nothing
 			else:
@@ -157,6 +125,41 @@ class MenuGame(Menu):
 	def draw(self):
 		self.frame_manager.draw()
 		pass
+
+	def try_load_file(self):
+		if not os.path.isfile('world.sav'):
+			return False
+		save_file = open('world.sav', 'r')
+		return pickle.load(save_file)
+
+	def save_current_state(self):
+		save_file = open('world.sav', 'w')
+		pickle.dump(self.behavior_manager.entities, save_file)
+
+	def flag_for_exit(self):
+		self.flagged_exit = True
+
+	def queue_action(self, action):
+		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.behavior_manager.entities)[0]
+		player_max_actions = player.get_attribute(AttributeTag.Player).data['max_actions_per_cycle']
+		action_cost = action.data['cost']
+		if self.queued_action_count + action_cost <= player_max_actions:
+			self.queued_action_count += action_cost
+			self.queued_actions.append(action)
+			self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueAdd, {'action': action}))
+
+
+	def execute_queued_actions(self):
+		self.game_state = GameState.Executing
+		# reverse the list; the commands are in sequential order, so the first one in the list is the first one to execute. This lets me treat the list as a stack and pop each command off
+		self.queued_actions.reverse()
+		self.execute_timer = 0
+		print 'beginning queued commands execution'
+
+	def clear_queued_actions(self):
+		self.queued_actions = []
+		self.queued_action_count = 0
+		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
 
 global_input_tree = {
 	'q': MenuGame.flag_for_exit,

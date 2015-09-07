@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
-from ui.menu_main import MenuMain
-from ui.menu_manager import MenuManager
+from logic.menu_main import MenuMain
+from logic.menu_manager import MenuManager
 
 
 screen_width = 80

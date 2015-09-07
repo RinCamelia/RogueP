@@ -1,9 +1,9 @@
 import libtcodpy as libtcod
-from menu import Menu
-from menu_manager import MenuStatus
-from objects.attribute import Attribute, AttributeTag
-from objects.entity import Entity
-from objects.action import Action, ActionTag
+from logic.menu import Menu
+from logic.menu_manager import MenuStatus
+from model.attribute import Attribute, AttributeTag
+from model.entity import Entity
+from model.action import Action, ActionTag
 from frame import Frame
 from vec2d import Vec2d
 from frame_manager import FrameState
@@ -33,8 +33,6 @@ class FrameWorld(Frame):
 					self.draw_entity_as_character(entity)	
 				elif entity.get_attribute(AttributeTag.ProgramMemory):
 					self.draw_entity_as_memory(entity)
-
-
 
 	def draw_entity_as_character(self, entity):
 		position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']

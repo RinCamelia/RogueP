@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
-import objects.behavior
-from objects.attribute import AttributeTag
+from model.behavior import PlayerMovementBehavior
+from model.attribute import AttributeTag
 
 class EntityManager:
 	def __init__(self):
@@ -8,7 +8,7 @@ class EntityManager:
 		self.entities = []
 		self.newest_entity_id = 0
 		#arguably bad but i don't want to go digging in introspection just yet to figure out how to make this automatic
-		self.behaviors.add(objects.behavior.PlayerMovementBehavior(self))
+		self.behaviors.add(PlayerMovementBehavior(self))
 
 	def get_new_entity_id(self):
 		self.newest_entity_id += 1

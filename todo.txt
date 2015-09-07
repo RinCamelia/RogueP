@@ -1,6 +1,4 @@
 TODO
 
-*Build a simple UI frame for action allocation
-*Build basic action command flow
-*Investigate feasibility of using pickle to save out game state	
+*make a simple enemy program that can use memory and has random walk behavior
 *start pulling character data out into .xp sheets for customizability

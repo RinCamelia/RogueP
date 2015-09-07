@@ -1,9 +1,9 @@
 import libtcodpy as libtcod
-from menu import Menu
-from menu_manager import MenuStatus
-from objects.attribute import Attribute, AttributeTag
-from objects.entity import Entity
-from objects.action import Action, ActionTag
+from logic.menu import Menu
+from logic.menu_manager import MenuStatus
+from model.attribute import Attribute, AttributeTag
+from model.entity import Entity
+from model.action import Action, ActionTag
 from frame import Frame
 from vec2d import Vec2d
 from ui_event import UIEvent, UIEventType
