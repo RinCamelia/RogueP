@@ -4,3 +4,9 @@ TODO
 *start pulling character data out into .xp sheets for customizability
 *clean up and improve input handling code
 *make a single/simple library (in game concept) and build UI code for display
+ *create a library/inventory frame, reposition 
+*properly offset world frame/action overlay frame from top left
+*decide what model of world grid to use (rooms? blank space? what)
+*make options menu
+*finish drafting title screen and display on main menu
+*explore options for animation(whether procedural or preloaded from .xp)
