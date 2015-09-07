@@ -2,7 +2,10 @@ from enum import Enum
 
 class UIEventType(Enum):
 	Empty = 1
-	ActionCountChange = 2
+	ActionQueueAdd = 2
+	ActionQueueRemove = 3
+	ActionQueueClear = 4
+	ActionQueueMaxActionsChange = 5
 
 class UIEvent:
 	def __str__(self):

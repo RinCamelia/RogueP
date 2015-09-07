@@ -48,11 +48,15 @@ class FrameActionClock(Frame):
 		self.queued_actions_bar_width = queued_actions_display_end[0] - queued_actions_display_start[0]
 
 	def handle_ui_event(self, event):
-		if event.type == UIEventType.ActionCountChange:
-			self.current_action_count = event.data['current_action_count']
+		if event.type == UIEventType.ActionQueueAdd:
+			self.current_action_count += event.data['action'].data['cost']
+		elif event.type == UIEventType.ActionQueueClear:
+			self.current_action_count = 0
+		elif event.type == UIEventType.ActionQueueMaxActionsChange:
 			self.max_actions = event.data['max_actions']
-			percent_queued = self.current_action_count / self.max_actions
-			self.highlighted_tile_count = round(percent_queued * self.queued_actions_bar_width)
+		percent_queued = self.current_action_count / self.max_actions
+		self.highlighted_tile_count = round(percent_queued * self.queued_actions_bar_width)
+
 
 	def draw(self):
 		libtcod.console_put_char(self.console, self.remaining_actions_display_position[0], self.remaining_actions_display_position[1], str(self.max_actions - self.current_action_count))
@@ -63,7 +67,7 @@ class FrameActionClock(Frame):
 				libtcod.console_put_char(self.console, self.queued_actions_display_start[0] + x, self.queued_actions_display_start[1], chr(176))
 
 		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, 0, 0)
-		
+
 		libtcod.console_put_char(self.console, self.remaining_actions_display_position[0], self.remaining_actions_display_position[1], ' ')
 		for x in range(self.queued_actions_bar_width + 1):
 				libtcod.console_put_char(self.console, self.queued_actions_display_start[0] + x, self.queued_actions_display_start[1], ' ')
