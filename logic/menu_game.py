@@ -29,16 +29,9 @@ class MenuGame(Menu):
 		Menu.__init__(self, console_width, console_width)
 		max_actions = 5
 		#currently hardcoded to test player movement
-		self.behavior_manager = EntityManager()
-		self.frame_manager = FrameManager(self)
-		world_frame = FrameWorld(console_width, console_height, self.behavior_manager)
-		self.frame_manager.add_frame(world_frame)
-		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.behavior_manager))
-		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
-		saved_world_state = self.try_load_file()
-		if saved_world_state:
-			self.behavior_manager.entities = saved_world_state
-		else:
+		self.behavior_manager = self.try_load_savegame()
+		if not self.behavior_manager:
+			self.behavior_manager = BehaviorManager()
 			self.behavior_manager.add_entity(Entity([
 						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
 						Attribute(AttributeTag.Visible),
@@ -47,7 +40,11 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.DrawInfo, {'character': 64})
 					])
 				)
-
+		self.frame_manager = FrameManager(self)
+		world_frame = FrameWorld(console_width, console_height, self.behavior_manager)
+		self.frame_manager.add_frame(world_frame)
+		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.behavior_manager))
+		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
 
 		self.queued_actions = []
 		self.game_state = GameState.TakingInput
@@ -126,7 +123,7 @@ class MenuGame(Menu):
 		self.frame_manager.draw()
 		pass
 
-	def try_load_file(self):
+	def try_load_savegame(self):
 		if not os.path.isfile('world.sav'):
 			return False
 		save_file = open('world.sav', 'r')
@@ -134,7 +131,7 @@ class MenuGame(Menu):
 
 	def save_current_state(self):
 		save_file = open('world.sav', 'w')
-		pickle.dump(self.behavior_manager.entities, save_file)
+		pickle.dump(self.behavior_manager, save_file)
 
 	def flag_for_exit(self):
 		self.flagged_exit = True
@@ -161,9 +158,14 @@ class MenuGame(Menu):
 		self.queued_action_count = 0
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
 
+	def dump_entities(self):
+		for entity in self.behavior_manager.entities:
+			print entity
+
 global_input_tree = {
 	'q': MenuGame.flag_for_exit,
-	's': MenuGame.save_current_state
+	's': MenuGame.save_current_state,
+	'd': MenuGame.dump_entities
 }
 
 contextual_input_tree = {

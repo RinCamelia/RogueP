@@ -1,7 +1,11 @@
 from attribute import AttributeTag
 
 class Entity:
-
+	def __str__(self):
+		return_string = 'Entity with ID ' + str(self.id) + ' and attributes: '
+		for attribute in self.attributes: 
+			return_string += str(attribute) + ', '
+		return return_string
 
 	def __init__(self, attributes=[]):
 		self.attributes = attributes
