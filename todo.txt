@@ -2,3 +2,5 @@ TODO
 
 *make a simple enemy program that can use memory and has random walk behavior
 *start pulling character data out into .xp sheets for customizability
+*clean up and improve input handling code
+*make a single/simple library (in game concept) and build UI code for display

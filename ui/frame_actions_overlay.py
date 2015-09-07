@@ -4,9 +4,6 @@ from frame import Frame
 from vec2d import Vec2d
 from ui_event import UIEventType
 
-# UI drawing class for the actual game world, renders to the subset of the screen that is not UI
-# or will, anyway, just draws right to the console atm
-# right now scrapes game state directly to draw things - may (and probably will) in the future harvest UI events to update the UI (pulling info only when player scans, etc)
 class FrameActionsOverlay(Frame):
 
 	def __init__(self, root_console_width, root_console_height, entity_manager):
@@ -19,7 +16,7 @@ class FrameActionsOverlay(Frame):
 	def handle_ui_event(self, event):
 		if event.type == UIEventType.ActionQueueAdd:
 			self.actions.append(event.data['action'])
-		if event.type == UIEventType.ActionQueueRemove:
+		elif event.type == UIEventType.ActionQueueRemove:
 			self.actions.remove(event.data['action'])
 		elif event.type == UIEventType.ActionQueueClear:
 			self.actions = []
