@@ -12,7 +12,6 @@ from model.attribute import Attribute, AttributeTag
 from model.entity import Entity
 from model.action import Action, ActionTag
 
-
 from ui.frame_manager import FrameManager
 from ui.ui_event import UIEvent, UIEventType
 from ui.frame_world import FrameWorld
@@ -22,14 +21,31 @@ from ui.frame_action_clock import FrameActionClock
 class GameState(Enum):
 	Executing = 1
 	TakingInput = 2
+	Loading = 3
 
 class MenuGame(Menu):
 
 	def __init__(self, console_width, console_height):
 		Menu.__init__(self, console_width, console_width)
+
 		max_actions = 5
-		#currently hardcoded to test player movement
-		self.entity_manager = self.try_load_savegame()
+		self.queued_actions = []
+		self.action_history = []
+		self.flagged_exit = False
+		self.loading_from_history = False
+		#delay in ms between executing commands
+		self.action_execute_delay = 250
+		self.execute_timer = 0
+		self.queued_action_count = 0
+		self.entity_manager = None
+		self.game_state = GameState.TakingInput
+
+		#try and load an action history. If that fails, try to load a save game state. 
+		#If, for either reason, we didn't load a save game state, initialize a new entity manager and put in a player.
+		loaded_action_history = self.try_load_action_history()
+		if not loaded_action_history:
+			self.entity_manager = self.try_load_savegame()
+
 		if not self.entity_manager:
 			self.entity_manager = EntityManager()
 			self.entity_manager.add_entity(Entity([
@@ -40,19 +56,14 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.DrawInfo, {'character': 64})
 					])
 				)
+		#currently hardcoded to test player movement
+
 		self.frame_manager = FrameManager(self)
 		world_frame = FrameWorld(console_width, console_height, self.entity_manager)
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.entity_manager))
 		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.entity_manager))
 
-		self.queued_actions = []
-		self.game_state = GameState.TakingInput
-		self.flagged_exit = False
-		#delay in ms between executing commands
-		self.action_execute_delay = 250
-		self.execute_timer = 0
-		self.queued_action_count = 0
 
 		# generate an initial set of UI events to set up the UI
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueMaxActionsChange, {'max_actions': max_actions}))
@@ -108,11 +119,15 @@ class MenuGame(Menu):
 					print 'executing Action ' + str(action)
 					self.entity_manager.handle_action(action)
 					self.queued_action_count -= 1
-					self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': action}))
+					if not self.loading_from_history:
+						self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': action}))
+					self.action_history.append(action)
 			else:
 				print 'queue empty, ending execution'
 				self.game_state = GameState.TakingInput
 				self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
+				if self.loading_from_history:
+					loading_from_history = False
 
 		if self.flagged_exit:
 			return MenuStatus.Exit
@@ -129,9 +144,23 @@ class MenuGame(Menu):
 		save_file = open('world.sav', 'r')
 		return pickle.load(save_file)
 
+	def try_load_action_history(self):
+		if not os.path.isfile('action_history.sav'):
+			return False
+		save_file = open('action_history.sav', 'r')
+		action_history = pickle.load(save_file)
+		self.queued_actions = action_history
+		self.loading_from_history = True
+		self.execute_queued_actions()
+		return True
+
 	def save_current_state(self):
 		save_file = open('world.sav', 'w')
 		pickle.dump(self.entity_manager, save_file)
+
+	def save_action_history(self):
+		save_file = open('action_history.sav', 'w')
+		pickle.dump(self.action_history, save_file)
 
 	def flag_for_exit(self):
 		self.flagged_exit = True
@@ -165,7 +194,8 @@ class MenuGame(Menu):
 global_input_tree = {
 	'q': MenuGame.flag_for_exit,
 	's': MenuGame.save_current_state,
-	'd': MenuGame.dump_entities
+	'd': MenuGame.dump_entities,
+	'f': MenuGame.save_action_history
 }
 
 contextual_input_tree = {

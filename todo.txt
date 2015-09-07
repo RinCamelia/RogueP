@@ -12,3 +12,6 @@ TODO
 *make options menu
 *finish drafting title screen and display on main menu
 *explore options for animation(whether procedural or preloaded from .xp)
+*create action history save
+ *initial implementation should dump entire action history into queue and execute at playback speed
+ *eventually either have special option to enable action history saves or make it a special hotkey 

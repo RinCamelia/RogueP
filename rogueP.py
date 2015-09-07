@@ -3,8 +3,8 @@ from logic.menu_main import MenuMain
 from logic.menu_manager import MenuManager
 
 
-screen_width = 80
-screen_height = 50
+screen_width = 60
+screen_height = 60
 limit_fps = 30
 menu_manager = MenuManager(MenuMain(screen_width, screen_height))
 
