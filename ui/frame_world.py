@@ -27,19 +27,20 @@ class FrameWorld(Frame):
 		for entity in self.entity_manager.entities:
 			if entity.get_attribute(AttributeTag.Visible):
 				position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']
-				draw_info = entity.get_attribute(AttributeTag.DrawInfo)
 				if not position_info:
 					raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any world position')
-				if not draw_info:
-					raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any drawing information')
-				if 'draw_func' in draw_info.data:
-					draw_info.data['draw_func'](self, entity)
-				else:
-					libtcod.console_put_char(0, position_info.x, position_info.y, '?', libtcod.BKGND_NONE) #render as an unknown character
+				if entity.get_attribute(AttributeTag.Player):
+					self.draw_entity_as_character(entity)	
+				elif entity.get_attribute(AttributeTag.ProgramMemory):
+					self.draw_entity_as_memory(entity)
+
+
 
 	def draw_entity_as_character(self, entity):
 		position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']
 		draw_info = entity.get_attribute(AttributeTag.DrawInfo)
+		if not draw_info:
+			raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any drawing information')
 		libtcod.console_put_char(0, position_info.x, position_info.y, chr(draw_info.data['character']), libtcod.BKGND_NONE)
 
 	def draw_entity_as_memory(self, entity):

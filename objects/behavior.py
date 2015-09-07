@@ -54,7 +54,6 @@ class PlayerMovementBehavior(Behavior):
 					Attribute(AttributeTag.ProgramMemory, {'parent_id': player.id}),
 					Attribute(AttributeTag.Visible),
 					Attribute(AttributeTag.WorldPosition, {'value': player_position.data['value']}),
-					Attribute(AttributeTag.DrawInfo, {'draw_func': FrameWorld.draw_entity_as_memory})
 				]))
 
 			player_position.data['value'] = new_player_position

@@ -1,4 +1,6 @@
 import libtcodpy as libtcod
+import os
+import pickle
 from menu import Menu
 from menu_manager import MenuStatus
 from behavior_manager import EntityManager
@@ -29,14 +31,19 @@ class MenuGame(Menu):
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.behavior_manager))
 		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.behavior_manager))
-		self.behavior_manager.add_entity(Entity([
-					Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
-					Attribute(AttributeTag.Visible),
-					Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
-					Attribute(AttributeTag.MaxProgramSize, {'value': 20}),
-					Attribute(AttributeTag.DrawInfo, {'character': 64, 'draw_func': FrameWorld.draw_entity_as_character})
-				])
-			)
+		saved_world_state = self.try_load_file()
+		if saved_world_state:
+			self.behavior_manager.entities = saved_world_state
+		else:
+			self.behavior_manager.add_entity(Entity([
+						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
+						Attribute(AttributeTag.Visible),
+						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
+						Attribute(AttributeTag.MaxProgramSize, {'value': 20}),
+						Attribute(AttributeTag.DrawInfo, {'character': 64})
+					])
+				)
+
 
 		self.queued_actions = []
 		self.game_state = GameState.TakingInput
@@ -48,6 +55,16 @@ class MenuGame(Menu):
 
 		# generate an initial set of UI events to set up the UI
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueMaxActionsChange, {'max_actions': max_actions}))
+
+	def try_load_file(self):
+		if not os.path.isfile('world.sav'):
+			return False
+		save_file = open('world.sav', 'r')
+		return pickle.load(save_file)
+
+	def save_current_state(self):
+		save_file = open('world.sav', 'w')
+		pickle.dump(self.behavior_manager.entities, save_file)
 
 
 	def flag_for_exit(self):
@@ -143,6 +160,7 @@ class MenuGame(Menu):
 
 global_input_tree = {
 	'q': MenuGame.flag_for_exit,
+	's': MenuGame.save_current_state
 }
 
 contextual_input_tree = {
