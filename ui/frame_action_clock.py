@@ -13,18 +13,18 @@ from ui_event import UIEvent, UIEventType
 # or will, anyway, just draws right to the console atm
 class FrameActionClock(Frame):
 
-	def __init__(self, root_console_width, root_console_height, entity_manager):
+	def __init__(self, root_console_width, root_console_height, frame_manager):
 		# constants and initialization
 		self.current_action_count = 0
 		self.max_actions = 0
 		self.highlighted_tile_count = 0
-		self.entity_manager = entity_manager
+		self.entity_manager = frame_manager.parent_menu.entity_manager
 
 		# load xp for bg
 		console_bg_xp = gzip.open('assets\\ui\\ui_frame_actionclock_bg.xp')
 		self.bg_data = xp_loader.load_xp_string(console_bg_xp.read())
 
-		Frame.__init__(self, root_console_width, root_console_height, self.bg_data['width'], self.bg_data['height'])
+		Frame.__init__(self, root_console_width, root_console_height, self.bg_data['width'], self.bg_data['height'], frame_manager)
 
 		xp_loader.load_layer_to_console(self.console, self.bg_data['layer_data'][0])
 

@@ -17,6 +17,7 @@ from ui.ui_event import UIEvent, UIEventType
 from ui.frame_world import FrameWorld
 from ui.frame_actions_overlay import FrameActionsOverlay
 from ui.frame_action_clock import FrameActionClock
+from ui.frame_pseudo_terminal import FramePseudoTerminal
 
 class GameState(Enum):
 	Executing = 1
@@ -41,12 +42,13 @@ class MenuGame(Menu):
 		self.game_state = GameState.TakingInput
 
 		#try and load an action history. If that fails, try to load a save game state. 
-		#If, for either reason, we didn't load a save game state, initialize a new entity manager and put in a player.
+		#If for either reason we didn't load a save game state, initialize a new entity manager and put in a player.
 		loaded_action_history = self.try_load_action_history()
 		if not loaded_action_history:
 			self.entity_manager = self.try_load_savegame()
 
 		if not self.entity_manager:
+			#currently hardcoded to test player movement
 			self.entity_manager = EntityManager()
 			self.entity_manager.add_entity(Entity([
 						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
@@ -56,13 +58,14 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.DrawInfo, {'character': 64})
 					])
 				)
-		#currently hardcoded to test player movement
 
 		self.frame_manager = FrameManager(self)
-		world_frame = FrameWorld(console_width, console_height, self.entity_manager)
+		world_frame = FrameWorld(console_width, console_height, self.frame_manager)
 		self.frame_manager.add_frame(world_frame)
-		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.entity_manager))
-		self.frame_manager.add_frame(FrameActionClock(console_width, console_height, self.entity_manager))
+		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.frame_manager))
+		action_clock = FrameActionClock(console_width, console_height, self.frame_manager)
+		self.frame_manager.add_frame(action_clock)
+		self.frame_manager.add_frame(FramePseudoTerminal(console_width, console_height, action_clock.width, console_height - action_clock.height, self.frame_manager))
 
 
 		# generate an initial set of UI events to set up the UI
@@ -71,46 +74,10 @@ class MenuGame(Menu):
 	def update(self, delta):
 		#blind isinstance(thing, Action) doesn't work because Python looks for a relevant local variable, not to imports
 		import model.action
-		key = libtcod.console_check_for_keypress(True) #libtcod.console_check_for_keypress
 
-		if self.game_state == GameState.TakingInput:
+		self.frame_manager.update(delta)
 
-			if key.vk != libtcod.KEY_CHAR and key.vk != libtcod.KEY_NONE:
-
-				if key.vk in contextual_input_tree:
-
-					if hasattr(contextual_input_tree[key.vk], ('__call__')):
-						contextual_input_tree[key.vk](self)
-
-					elif isinstance(contextual_input_tree[key.vk], model.action.Action):
-						self.queue_action(contextual_input_tree[key.vk])
-
-				elif key.vk in global_input_tree:
-
-					if hasattr(global_input_tree[key.vk], ('__call__')):
-						global_input_tree[key.vk](self)
-
-					elif isinstance(global_input_tree[key.vk], model.action.Action):
-						self.queue_action(global_input_tree[key.vk])
-				# do nothing
-			else:
-				if chr(key.c) in contextual_input_tree:
-
-					if hasattr(contextual_input_tree[chr(key.c)], ('__call__')):
-						contextual_input_tree[chr(key.c)](self)
-
-					elif isinstance(contextual_input_tree[chr(key.c)], Action):
-						self.queue_action(contextual_input_tree[chr(key.c)])
-
-				elif chr(key.c) in global_input_tree:
-
-					if hasattr(global_input_tree[chr(key.c)], ('__call__')):
-						global_input_tree[chr(key.c)](self)
-
-					elif isinstance(global_input_tree[chr(key.c)], Action):
-						self.queue_action(global_input_tree[chr(key.c)])
-
-		elif self.game_state == GameState.Executing:
+		if self.game_state == GameState.Executing:
 			if len(self.queued_actions) > 0:
 				self.execute_timer += delta
 				if self.execute_timer >= self.action_execute_delay:
@@ -137,6 +104,26 @@ class MenuGame(Menu):
 	def draw(self):
 		self.frame_manager.draw()
 		pass
+
+	def handle_input_command(self, input_command):
+		if self.game_state == GameState.TakingInput:
+
+			if input_command in contextual_input_tree:
+
+				if hasattr(contextual_input_tree[input_command], ('__call__')):
+					contextual_input_tree[input_command](self)
+
+				elif isinstance(contextual_input_tree[input_command], Action):
+					self.queue_action(contextual_input_tree[input_command])
+
+			elif input_command in global_input_tree:
+
+				if hasattr(global_input_tree[input_command], ('__call__')):
+					global_input_tree[input_command](self)
+
+				elif isinstance(global_input_tree[input_command], Action):
+					self.queue_action(global_input_tree[input_command])
+
 
 	def try_load_savegame(self):
 		if not os.path.isfile('world.sav'):
@@ -199,10 +186,10 @@ global_input_tree = {
 }
 
 contextual_input_tree = {
-	libtcod.KEY_UP: Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, -1), 'cost':1}),
-	libtcod.KEY_DOWN: Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, 1), 'cost':1}),
-	libtcod.KEY_LEFT: Action(ActionTag.PlayerMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
-	libtcod.KEY_RIGHT: Action(ActionTag.PlayerMovement, {'value' : Vec2d(1, 0), 'cost':1}),
+	'up': Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, -1), 'cost':1}),
+	'down': Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, 1), 'cost':1}),
+	'left': Action(ActionTag.PlayerMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
+	'right': Action(ActionTag.PlayerMovement, {'value' : Vec2d(1, 0), 'cost':1}),
 	'e': MenuGame.execute_queued_actions,
 	'a': MenuGame.clear_queued_actions
 }

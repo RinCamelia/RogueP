@@ -1,17 +1,33 @@
 TODO
 
+next:
+
+*Convert action history saving into distinct codepath
+*expand terminal to display responses as well (scrape UI events to show what's happening)
+
+short term:
+
 *make a simple enemy program that can use memory and has random walk behavior
-*start pulling character data out into .xp sheets for customizability
-*clean up and improve input handling code
+*
+*properly offset world frame/action overlay frame from top left
+ *not really needed until pseudoterminal and info pane added
+
+medium term:
+
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *hard code a single library for now
  *most, if not all, libraries will require additional world elements to interact with, so this may have to wait for a good deal of time
-*properly offset world frame/action overlay frame from top left
-*decide what model of world grid to use (rooms? blank space? what)
-*make options menu
+*either write single info pane UI frame or different kinds of command pane that render over the rest of the UI
+*explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
+*start storing player and world attributes (enemy program stats, library stats, etc.) in configuration files instead of hardcoded (requires finding a data format - probably JSON)
+*
+
+long term:
+
+
+*create xp sheets for color palettes, display characters, etc.
+*start saving 
 *finish drafting title screen and display on main menu
+*begin thinking of distinct program types and mechanics beyond "shoot thing, it dies"
 *explore options for animation(whether procedural or preloaded from .xp)
-*create action history save
- *initial implementation should dump entire action history into queue and execute at playback speed
- *eventually either have special option to enable action history saves or make it a special hotkey 

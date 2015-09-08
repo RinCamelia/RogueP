@@ -4,9 +4,11 @@ import libtcodpy as libtcod
 
 class Frame:
 
-	def __init__(self, root_console_width, root_console_height, width=0, height=0):
+	def __init__(self,root_console_width, root_console_height, width=0, height=0, frame_manager=None):
 		self.root_console_height = root_console_width
 		self.root_console_height = root_console_height
+
+		self.frame_manager = frame_manager
 
 		self.width = width
 		self.height = height

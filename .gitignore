@@ -60,3 +60,6 @@ target/
 *.sav
 # Art tool
 REXPaint/
+# progress record directory
+
+Progress/

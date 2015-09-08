@@ -6,9 +6,9 @@ from ui_event import UIEventType
 
 class FrameActionsOverlay(Frame):
 
-	def __init__(self, root_console_width, root_console_height, entity_manager):
-		Frame.__init__(self, root_console_width, root_console_height, root_console_width, root_console_height)
-		self.entity_manager = entity_manager
+	def __init__(self, root_console_width, root_console_height, frame_manager):
+		Frame.__init__(self, root_console_width, root_console_height, root_console_width, root_console_height, frame_manager)
+		self.entity_manager = frame_manager.parent_menu.entity_manager
 		self.actions = []
 		libtcod.console_set_default_background(self.console, libtcod.Color(255, 0, 255))
 		libtcod.console_set_key_color(self.console, libtcod.Color(255, 0, 255))

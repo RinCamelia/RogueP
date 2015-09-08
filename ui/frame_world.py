@@ -8,9 +8,9 @@ from vec2d import Vec2d
 # right now scrapes game state directly to draw things - may (and probably will) in the future harvest UI events to update the UI (pulling info only when player scans, etc)
 class FrameWorld(Frame):
 
-	def __init__(self, root_console_width, root_console_height, entity_manager):
+	def __init__(self, root_console_width, root_console_height, frame_manager):
 		Frame.__init__(self, root_console_width, root_console_height)
-		self.entity_manager = entity_manager
+		self.entity_manager = frame_manager.parent_menu.entity_manager
 
 	def update(self, delta):
 		# may need update logic, for now, nothing
