@@ -53,7 +53,7 @@ class FramePseudoTerminal(Frame):
 			elif key.vk == libtcod.KEY_RIGHT:
 				if len(self.input_command) < self.max_command_size:
 					self.input_command += chr(16)
-			elif key.vk == libtcod.KEY_ENTER:
+			elif key.vk == libtcod.KEY_ENTER and self.input_command != "":
 				self.add_line_to_history(self.prompt_string + self.input_command)
 				self.frame_manager.parent_menu.handle_input_command(self.input_command)
 				self.input_command = ""
@@ -74,7 +74,12 @@ class FramePseudoTerminal(Frame):
 			self.input_enabled = False
 		elif event.type == UIEventType.InputEnabled:
 			self.input_enabled = True
-		if event.type in command_response_table:
+		elif event.type == UIEventType.InvalidCommand and len(event.data['command']) > 1:
+			#if it was a non single character command and the result was not found, try splitting the command out into characters and trying each one
+			self.add_line_to_history("(event sequence)")
+			for char in list(event.data['command']):
+				self.frame_manager.parent_menu.handle_input_command(char)
+		elif event.type in command_response_table:
 			self.add_line_to_history(command_response_table[event.type])
 
 	def add_line_to_history(self, line):
