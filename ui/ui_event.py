@@ -6,6 +6,9 @@ class UIEventType(Enum):
 	ActionQueueRemove = 3
 	ActionQueueClear = 4
 	ActionQueueMaxActionsChange = 5
+	InputDisabled = 6
+	InputEnabled = 7
+	InvalidCommand = 8
 
 class UIEvent:
 	def __str__(self):

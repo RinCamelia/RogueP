@@ -33,7 +33,6 @@ class MenuGame(Menu):
 		self.queued_actions = []
 		self.action_history = []
 		self.flagged_exit = False
-		self.loading_from_history = False
 		#delay in ms between executing commands
 		self.action_execute_delay = 250
 		self.execute_timer = 0
@@ -86,15 +85,20 @@ class MenuGame(Menu):
 					print 'executing Action ' + str(action)
 					self.entity_manager.handle_action(action)
 					self.queued_action_count -= 1
-					if not self.loading_from_history:
-						self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': action}))
+					self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': action}))
 					self.action_history.append(action)
 			else:
 				print 'queue empty, ending execution'
+				self.frame_manager.handle_ui_event(UIEvent(UIEventType.InputEnabled))
 				self.game_state = GameState.TakingInput
 				self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
-				if self.loading_from_history:
-					loading_from_history = False
+
+		#future possible optimization/redesign: batch out commands to no longer than x MS per tick to allow UI update of a loading screen
+		elif self.game_state == GameState.Loading:
+			for action in self.action_history:
+				self.entity_manager.handle_action(action)
+			self.game_state = GameState.TakingInput
+
 
 		if self.flagged_exit:
 			return MenuStatus.Exit
@@ -123,7 +127,8 @@ class MenuGame(Menu):
 
 				elif isinstance(global_input_tree[input_command], Action):
 					self.queue_action(global_input_tree[input_command])
-
+			else:
+				self.frame_manager.handle_ui_event(UIEvent(UIEventType.InvalidCommand, {'command': input_command}))
 
 	def try_load_savegame(self):
 		if not os.path.isfile('world.sav'):
@@ -136,9 +141,8 @@ class MenuGame(Menu):
 			return False
 		save_file = open('action_history.sav', 'r')
 		action_history = pickle.load(save_file)
-		self.queued_actions = action_history
-		self.loading_from_history = True
-		self.execute_queued_actions()
+		self.action_history = action_history
+		self.game_state = GameState.Loading
 		return True
 
 	def save_current_state(self):
@@ -167,6 +171,7 @@ class MenuGame(Menu):
 		# reverse the list; the commands are in sequential order, so the first one in the list is the first one to execute. This lets me treat the list as a stack and pop each command off
 		self.queued_actions.reverse()
 		self.execute_timer = 0
+		self.frame_manager.handle_ui_event(UIEvent(UIEventType.InputDisabled))
 		print 'beginning queued commands execution'
 
 	def clear_queued_actions(self):
@@ -186,10 +191,10 @@ global_input_tree = {
 }
 
 contextual_input_tree = {
-	'up': Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, -1), 'cost':1}),
-	'down': Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, 1), 'cost':1}),
-	'left': Action(ActionTag.PlayerMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
-	'right': Action(ActionTag.PlayerMovement, {'value' : Vec2d(1, 0), 'cost':1}),
+	chr(30): Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, -1), 'cost':1}),
+	chr(31): Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, 1), 'cost':1}),
+	chr(17): Action(ActionTag.PlayerMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
+	chr(16): Action(ActionTag.PlayerMovement, {'value' : Vec2d(1, 0), 'cost':1}),
 	'e': MenuGame.execute_queued_actions,
 	'a': MenuGame.clear_queued_actions
 }
