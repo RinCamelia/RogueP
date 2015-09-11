@@ -25,6 +25,7 @@ class FrameActionClock(Frame):
 
 		Frame.__init__(self, root_console_width, root_console_height, self.bg_data['width'], self.bg_data['height'], frame_manager)
 
+
 		xp_loader.load_layer_to_console(self.console, self.bg_data['layer_data'][0])
 
 		queued_actions_display_start = None
@@ -59,7 +60,13 @@ class FrameActionClock(Frame):
 
 
 	def draw(self):
-		libtcod.console_put_char(self.console, self.remaining_actions_display_position[0], self.remaining_actions_display_position[1], str(self.max_actions - self.current_action_count))
+
+		libtcod.console_clear(self.console)
+		xp_loader.load_layer_to_console(self.console, self.bg_data['layer_data'][0])
+
+		libtcod.console_set_alignment(self.console, libtcod.LEFT)
+		libtcod.console_print(self.console, self.remaining_actions_display_position[0], self.remaining_actions_display_position[1], str(self.max_actions - self.current_action_count))
+
 		for x in range(self.queued_actions_bar_width + 1):
 			if x <= self.highlighted_tile_count and self.highlighted_tile_count > 0:
 				libtcod.console_put_char(self.console, self.queued_actions_display_start[0] + x, self.queued_actions_display_start[1], chr(178))

@@ -36,7 +36,7 @@ class MenuGame(Menu):
 	def __init__(self, console_width, console_height):
 		Menu.__init__(self, console_width, console_width)
 
-		max_actions = 5
+		max_actions = 10
 		self.queued_actions_cost_so_far = 0
 		self.action_history = []
 		self.flagged_exit = False
@@ -72,7 +72,7 @@ class MenuGame(Menu):
 				)
 
 		self.frame_manager = FrameManager(self)
-		
+
 		world_frame = FrameWorld(console_width, console_height, self.frame_manager)
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.frame_manager))

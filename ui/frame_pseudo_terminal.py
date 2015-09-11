@@ -29,7 +29,6 @@ class FramePseudoTerminal(Frame):
 		Frame.__init__(self, root_console_width, root_console_height, terminal_width, terminal_height, frame_manager)
 
 		libtcod.console_set_key_color(self.console, libtcod.Color(255, 0, 255))
-		libtcod.console_set_alignment(self.console, libtcod.LEFT)
 
 	def update(self, delta):
 		key = libtcod.console_check_for_keypress(True)
@@ -76,6 +75,7 @@ class FramePseudoTerminal(Frame):
 			self.input_enabled = True
 		elif event.type == UIEventType.InvalidCommand and len(event.data['command']) > 1:
 			#if it was a non single character command and the result was not found, try splitting the command out into characters and trying each one
+			#TODO move this into command strings file
 			self.add_line_to_history("(event sequence)")
 			for char in list(event.data['command']):
 				self.frame_manager.parent_menu.handle_input_command(char)
@@ -98,13 +98,14 @@ class FramePseudoTerminal(Frame):
 		libtcod.console_rect(self.console, 0, 0, self.width, self.height, libtcod.BKGND_SET)
 		libtcod.console_set_default_background(self.console, libtcod.black)
 
+		libtcod.console_set_alignment(self.console, libtcod.LEFT)
 
 		current_height = 0
 		for line in self.console_command_history:
-			libtcod.console_print(self.console, 1, current_height, line)
+			libtcod.console_print(self.console, 0, current_height, line)
 			current_height += 1
 		if self.input_enabled:
-			libtcod.console_print(self.console, 1, current_height, self.prompt_string + self.input_command + self.blinking_cursor)
+			libtcod.console_print(self.console, 0, current_height, self.prompt_string + self.input_command + self.blinking_cursor)
 
 		libtcod.console_vline(self.console, self.width - 1, 0, self.height)
 
