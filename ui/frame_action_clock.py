@@ -74,7 +74,3 @@ class FrameActionClock(Frame):
 				libtcod.console_put_char(self.console, self.queued_actions_display_start[0] + x, self.queued_actions_display_start[1], chr(176))
 
 		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, 0, 0)
-
-		libtcod.console_put_char(self.console, self.remaining_actions_display_position[0], self.remaining_actions_display_position[1], ' ')
-		for x in range(self.queued_actions_bar_width + 1):
-				libtcod.console_put_char(self.console, self.queued_actions_display_start[0] + x, self.queued_actions_display_start[1], ' ')
