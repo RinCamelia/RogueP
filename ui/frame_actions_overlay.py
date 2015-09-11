@@ -7,6 +7,7 @@ from ui_event import UIEventType
 class FrameActionsOverlay(Frame):
 
 	def __init__(self, root_console_width, root_console_height, frame_manager):
+		#TODO manage offset of code
 		Frame.__init__(self, root_console_width, root_console_height, root_console_width, root_console_height, frame_manager)
 		self.entity_manager = frame_manager.parent_menu.entity_manager
 		self.actions = []
@@ -21,7 +22,7 @@ class FrameActionsOverlay(Frame):
 		elif event.type == UIEventType.ActionQueueClear:
 			self.actions = []
 
-	#is mostly temporary proof of concept
+	#is mostly temporary proof of concept - will need to be a lot more nuanced to render library executes, memory scans, etc etc
 	def draw(self):
 		libtcod.console_clear(self.console)
 		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.entity_manager.entities)[0]

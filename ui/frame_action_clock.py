@@ -9,7 +9,7 @@ from vec2d import Vec2d
 from frame import Frame
 from ui_event import UIEvent, UIEventType
 
-# Displays remaining and queued actions
+# Displays remaining and queued actions. 
 class FrameActionClock(Frame):
 
 	def __init__(self, root_console_width, root_console_height, frame_manager):
@@ -27,10 +27,10 @@ class FrameActionClock(Frame):
 
 		xp_loader.load_layer_to_console(self.console, self.bg_data['layer_data'][0])
 
-		# parse position key layer for positions of UI elements
 		queued_actions_display_start = None
 		queued_actions_display_end = None
 
+		#scrape the xp file for position markers for action clock bar and text for actions remaining
 		x = 0
 		for row in self.bg_data['layer_data'][1]['cells']:
 			y = 0

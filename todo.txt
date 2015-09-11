@@ -3,10 +3,13 @@ TODO
 next:
 
 *make a simple enemy program that can use memory and has random walk behavior
- *define hostile programs with behavior types, stats, executable libraries, etc. and a single hostileprogram flag
+ *Write additional behaviors that operate on hostile programs
+ *Generalize movement behavior into other than player stuff
+  *Actually probably rename this and or turn into two behaviors, one managing memory creation and one managing the actual movement?
 
 short term:
 
+*Start writing utility code to do things like find adjacent entities, get the player, etc. to cut down on code repetition
 *properly offset world frame/action overlay frame from top left
  *not really needed until pseudoterminal and info pane added
 *make a single/simple library (in game concept) and build UI code for display
@@ -14,19 +17,26 @@ short term:
  *create a command details pane
  *hard code a single library for now
  *most, if not all, libraries will require additional world elements to interact with, so this may have to wait for a good deal of time
+*Start writing the entity piping for world tiles and walls and such
+*Make more use of .xp files and such to initialize UI (also pull in more appropriate styling, i'm more or less ignoring the mockup styles I made for now)
 
 medium term:
 
 *either write single info pane UI frame or different kinds of command pane that render over the rest of the UI
+ *At this point I'm thinking 
 *explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
 *start storing player and world attributes (enemy program stats, library stats, etc.) in configuration files instead of hardcoded (requires finding a data format - probably JSON)
-*
+*Decide an explicit place for UI initialization code to minimize the burden on having a ridiculously huge MenuGame.__init__
+*Break out world generation into its own code once I get that far (again, to reduce size on MenuGame.__init)
+*Pull out saving code into more distinct code path to support things like RNG initialization and such
+*Speaking of world generation, make actual world generation
+*Re-investigate introspection to scrape for behavior subclasses, or some other non hard coded way
+*Start looking at how to manage mouse input contextually
+*Figure out how to set just the foreground or background color of a tile without changing the character (currently thinking I need a layer on the very top and calls into frame manager to queue tile setting)
 
-long term:
-
+long term (also known as when im bored and want to work on the game side of game development):
 
 *create xp sheets for color palettes, display characters, etc.
-*start saving 
 *finish drafting title screen and display on main menu
 *begin thinking of distinct program types and mechanics beyond "shoot thing, it dies"
 *explore options for animation(whether procedural or preloaded from .xp)
@@ -36,3 +46,7 @@ Completed thus far (started 9/9):
 
 *Convert action history saving into distinct codepath
 *expand terminal to display responses as well (scrape UI events to show what's happening)
+*make a simple enemy program that can use memory and has random walk behavior
+ *define hostile programs with behavior types, stats, executable libraries, etc. and a single hostileprogram flag
+*Move action queue and execution code into entity manager to better support cascading sequences of actions
+*

@@ -24,6 +24,13 @@ class GameState(Enum):
 	TakingInput = 2
 	Loading = 3
 
+
+# Quasi-controller class
+# This is loaded directly into the main execution stack in my game loop, takes input from the UI and converts it to actual game state mutation or other things like saving or quitting
+# Also does very trivial state tracking of its own, right now only for whether it should be taking input and the gameplay side of player actions
+# If you want to see world state and logic, go to the model folder
+# If you want to see rendering and UI, go to the UI folder and look at the frame classes
+# Raw input is handled in frame_pseudo_terminal in ui
 class MenuGame(Menu):
 
 	def __init__(self, console_width, console_height):
@@ -65,9 +72,11 @@ class MenuGame(Menu):
 				)
 
 		self.frame_manager = FrameManager(self)
+		
 		world_frame = FrameWorld(console_width, console_height, self.frame_manager)
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.frame_manager))
+
 		action_clock = FrameActionClock(console_width, console_height, self.frame_manager)
 		self.frame_manager.add_frame(action_clock)
 		self.frame_manager.add_frame(FramePseudoTerminal(console_width, console_height, action_clock.width, console_height - action_clock.height, self.frame_manager))
@@ -77,17 +86,16 @@ class MenuGame(Menu):
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueMaxActionsChange, {'max_actions': max_actions}))
 
 	def update(self, delta):
-		#blind isinstance(thing, Action) doesn't work because Python looks for a relevant local variable, not to imports
-		import model.action
-
 		self.frame_manager.update(delta)
 		self.entity_manager.update(delta)
 
 		if self.game_state == GameState.Executing:
 			if not self.entity_manager.is_executing:
+
 				self.frame_manager.handle_ui_event(UIEvent(UIEventType.InputEnabled))
-				self.game_state = GameState.TakingInput
 				self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
+
+				self.game_state = GameState.TakingInput
 				self.queued_actions_cost_so_far = 0
 
 		#future possible optimization/redesign: batch out commands to no longer than x MS per tick to allow UI update of a loading screen
@@ -136,6 +144,7 @@ class MenuGame(Menu):
 	def try_load_action_history(self):
 		if not os.path.isfile('action_history.sav'):
 			return False
+
 		save_file = open('action_history.sav', 'r')
 		action_history = pickle.load(save_file)
 		self.action_history = action_history
@@ -165,7 +174,6 @@ class MenuGame(Menu):
 
 	def execute_queued_actions(self):
 		self.game_state = GameState.Executing
-		# reverse the list; the commands are in sequential order, so the first one in the list is the first one to execute. This lets me treat the list as a stack and pop each command off
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.InputDisabled))
 		self.entity_manager.start_execution()
 		print 'beginning queued commands execution'
@@ -183,6 +191,8 @@ class MenuGame(Menu):
 		print self.entity_manager.is_executing
 		print self.entity_manager.update_timer
 
+
+#currently pending refactoring into its own structure of some kind, whether that be a class or in-place somewhere above
 global_input_tree = {
 	'q': MenuGame.flag_for_exit,
 	's': MenuGame.save_current_state,

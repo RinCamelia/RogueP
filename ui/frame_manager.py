@@ -32,7 +32,6 @@ class FrameManager:
 				frame['visible'] = False
 			elif status == FrameState.Show:
 				frame['visible'] = True
-		#write input management code here
 
 	def draw(self):
 		for frame in self.frames:

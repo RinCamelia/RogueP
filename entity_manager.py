@@ -2,14 +2,9 @@ import libtcodpy as libtcod
 from model.behavior import PlayerMovementBehavior
 from ui.ui_event import UIEvent, UIEventType
 
-###############################
-###############################
-# TODO: Rewrite initialization to scrape and produce a list of behaviors that are the most derived subclasses, for the purposes of calling behavior execution on them
-# then its as simple as building validation and such through subclassing
-# next challenge: handle behavior targeting
-
-
-
+#Entity manager does two things right now: 1. manages game state entities (including ID assignment, fetching by ID, and )
+#I just moved that code here and thinking back on it, it may not have been strictly necessary, but it makes keeping the internal details of actually mutating model state in one spot
+#Or perhaps I just need to rename this again to ModelManger or something, the alternative is moving open a lot more behavior management functionality to MenuGame
 class EntityManager:
 	def __init__(self, parent_menu):
 		self.behaviors = self.get_behaviors()
@@ -66,10 +61,6 @@ class EntityManager:
 	def process_single_queued_action(self, action):
 		resulting_actions = self.handle_action(action)
 
-		#the only issue i can think of with this is if an action gets generated and queued and is then later invalidated by an action already in the current set of processing commands
-		#cases like generating a move order into a tile that is now blocked, dealing damage to a target that is killed, trying to execute a library on a memory section that is now out of range, etc.
-		#which really to me says i need good validation logic, not that the batching is a bad idea
-
 		while len(resulting_actions) > 0:
 			temp_action_list = []
 			for resulting_action in resulting_actions:
@@ -86,6 +77,8 @@ class EntityManager:
 				self.update_timer = 0
 				current_action = self.queued_actions.pop()
 				self.process_single_queued_action(current_action)
+				#this is the only line of code that depends on the outside world to any degree. I *REALLY* don't like doing this, and may consider a callback model in the future 
+				#for now it is the simple way to tell the UI that we processed an action without doing nasty voodoo in MenuGame
 				self.parent_menu.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': current_action}))
 				if len(self.queued_actions) == 0:
 					self.is_executing = False
