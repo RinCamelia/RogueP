@@ -9,8 +9,7 @@ from vec2d import Vec2d
 from frame import Frame
 from ui_event import UIEvent, UIEventType
 
-# UI drawing class for the actual game world, renders to the subset of the screen that is not UI
-# or will, anyway, just draws right to the console atm
+# Displays remaining and queued actions
 class FrameActionClock(Frame):
 
 	def __init__(self, root_console_width, root_console_height, frame_manager):

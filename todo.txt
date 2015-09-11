@@ -2,22 +2,21 @@ TODO
 
 next:
 
-*Convert action history saving into distinct codepath
-*expand terminal to display responses as well (scrape UI events to show what's happening)
+*make a simple enemy program that can use memory and has random walk behavior
+ *define hostile programs with behavior types, stats, executable libraries, etc. and a single hostileprogram flag
 
 short term:
 
-*make a simple enemy program that can use memory and has random walk behavior
-*
 *properly offset world frame/action overlay frame from top left
  *not really needed until pseudoterminal and info pane added
+*make a single/simple library (in game concept) and build UI code for display
+ *create a library/inventory frame
+ *create a command details pane
+ *hard code a single library for now
+ *most, if not all, libraries will require additional world elements to interact with, so this may have to wait for a good deal of time
 
 medium term:
 
-*make a single/simple library (in game concept) and build UI code for display
- *create a library/inventory frame
- *hard code a single library for now
- *most, if not all, libraries will require additional world elements to interact with, so this may have to wait for a good deal of time
 *either write single info pane UI frame or different kinds of command pane that render over the rest of the UI
 *explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
 *start storing player and world attributes (enemy program stats, library stats, etc.) in configuration files instead of hardcoded (requires finding a data format - probably JSON)
@@ -31,3 +30,9 @@ long term:
 *finish drafting title screen and display on main menu
 *begin thinking of distinct program types and mechanics beyond "shoot thing, it dies"
 *explore options for animation(whether procedural or preloaded from .xp)
+
+
+Completed thus far (started 9/9):
+
+*Convert action history saving into distinct codepath
+*expand terminal to display responses as well (scrape UI events to show what's happening)

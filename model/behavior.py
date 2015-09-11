@@ -17,11 +17,11 @@ class Behavior:
 		pass
 
 	def handle_action(self, action):
-		pass
+		return []
 
-def is_player_memory(player, ent): 
+def is_memory_of_parent(parent, ent): 
 	is_memory = ent.get_attribute(AttributeTag.ProgramMemory)
-	if is_memory != False and is_memory.data['parent_id'] == player.id:
+	if is_memory != False and is_memory.data['parent_id'] == parent.id:
 		return True
 	return False
 
@@ -30,13 +30,13 @@ def is_player_memory(player, ent):
 class PlayerMovementBehavior(Behavior):
 
 	def handle_action(self, action):
-		if action.type == ActionTag.PlayerMovement:
+		if action.type == ActionTag.ProgramMovement:
 			player = filter(lambda ent:ent.get_attribute(AttributeTag.Player), self.manager.entities)[0]
 			player_position = player.get_attribute(AttributeTag.WorldPosition)
 			new_player_position = player_position.data['value'] + action.data['value']
 			# TODO make it check the parent program
 
-			player_program_squares = filter(lambda ent: is_player_memory(player, ent), self.manager.entities)
+			player_program_squares = filter(lambda ent: is_memory_of_parent(player, ent), self.manager.entities)
 
 			# -1 here because the player's actual character position counts for purposes of max memory size
 			if len(player_program_squares) >= player.get_attribute(AttributeTag.MaxProgramSize).data['value'] - 1:
@@ -57,3 +57,4 @@ class PlayerMovementBehavior(Behavior):
 				]))
 
 			player_position.data['value'] = new_player_position
+		return []

@@ -30,13 +30,9 @@ class MenuGame(Menu):
 		Menu.__init__(self, console_width, console_width)
 
 		max_actions = 5
-		self.queued_actions = []
+		self.queued_actions_cost_so_far = 0
 		self.action_history = []
 		self.flagged_exit = False
-		#delay in ms between executing commands
-		self.action_execute_delay = 250
-		self.execute_timer = 0
-		self.queued_action_count = 0
 		self.entity_manager = None
 		self.game_state = GameState.TakingInput
 
@@ -48,13 +44,23 @@ class MenuGame(Menu):
 
 		if not self.entity_manager:
 			#currently hardcoded to test player movement
-			self.entity_manager = EntityManager()
+			self.entity_manager = EntityManager(self)
 			self.entity_manager.add_entity(Entity([
 						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
 						Attribute(AttributeTag.Visible),
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 20}),
-						Attribute(AttributeTag.DrawInfo, {'character': 64})
+						Attribute(AttributeTag.ClockRate, {'value': 2}),
+						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(255,0,255)})
+					])
+				)
+			self.entity_manager.add_entity(Entity([
+						Attribute(AttributeTag.HostileProgram),
+						Attribute(AttributeTag.Visible),
+						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(40, 20)}),
+						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
+						Attribute(AttributeTag.ClockRate, {'value': 2}),
+						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0)})
 					])
 				)
 
@@ -75,28 +81,19 @@ class MenuGame(Menu):
 		import model.action
 
 		self.frame_manager.update(delta)
+		self.entity_manager.update(delta)
 
 		if self.game_state == GameState.Executing:
-			if len(self.queued_actions) > 0:
-				self.execute_timer += delta
-				if self.execute_timer >= self.action_execute_delay:
-					self.execute_timer = 0
-					action = self.queued_actions.pop()
-					print 'executing Action ' + str(action)
-					self.entity_manager.handle_action(action)
-					self.queued_action_count -= 1
-					self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': action}))
-					self.action_history.append(action)
-			else:
-				print 'queue empty, ending execution'
+			if not self.entity_manager.is_executing:
 				self.frame_manager.handle_ui_event(UIEvent(UIEventType.InputEnabled))
 				self.game_state = GameState.TakingInput
 				self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
+				self.queued_actions_cost_so_far = 0
 
 		#future possible optimization/redesign: batch out commands to no longer than x MS per tick to allow UI update of a loading screen
 		elif self.game_state == GameState.Loading:
 			for action in self.action_history:
-				self.entity_manager.handle_action(action)
+				self.entity_manager.handle_action(action) # may need to convert to dumping into entity manager's queue and calling a load action history method
 			self.game_state = GameState.TakingInput
 
 
@@ -160,41 +157,45 @@ class MenuGame(Menu):
 		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.entity_manager.entities)[0]
 		player_max_actions = player.get_attribute(AttributeTag.Player).data['max_actions_per_cycle']
 		action_cost = action.data['cost']
-		if self.queued_action_count + action_cost <= player_max_actions:
-			self.queued_action_count += action_cost
-			self.queued_actions.append(action)
+		if self.queued_actions_cost_so_far + action_cost <= player_max_actions:
+			self.queued_actions_cost_so_far += action_cost
+			self.entity_manager.queue_action(action)
 			self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueAdd, {'action': action}))
 
 
 	def execute_queued_actions(self):
 		self.game_state = GameState.Executing
 		# reverse the list; the commands are in sequential order, so the first one in the list is the first one to execute. This lets me treat the list as a stack and pop each command off
-		self.queued_actions.reverse()
-		self.execute_timer = 0
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.InputDisabled))
+		self.entity_manager.start_execution()
 		print 'beginning queued commands execution'
 
 	def clear_queued_actions(self):
-		self.queued_actions = []
-		self.queued_action_count = 0
+		self.entity_manager.queued_actions = []
+		self.queued_actions_cost_so_far = 0
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueClear))
 
 	def dump_entities(self):
 		for entity in self.entity_manager.entities:
 			print entity
 
+	def dump_entity_manager_state(self):
+		print self.entity_manager.is_executing
+		print self.entity_manager.update_timer
+
 global_input_tree = {
 	'q': MenuGame.flag_for_exit,
 	's': MenuGame.save_current_state,
 	'd': MenuGame.dump_entities,
-	'f': MenuGame.save_action_history
+	'f': MenuGame.save_action_history,
+	'g': MenuGame.dump_entity_manager_state
 }
 
 contextual_input_tree = {
-	chr(30): Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, -1), 'cost':1}),
-	chr(31): Action(ActionTag.PlayerMovement, {'value' : Vec2d(0, 1), 'cost':1}),
-	chr(17): Action(ActionTag.PlayerMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
-	chr(16): Action(ActionTag.PlayerMovement, {'value' : Vec2d(1, 0), 'cost':1}),
+	chr(30): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, -1), 'cost':1}),
+	chr(31): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, 1), 'cost':1}),
+	chr(17): Action(ActionTag.ProgramMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
+	chr(16): Action(ActionTag.ProgramMovement, {'value' : Vec2d(1, 0), 'cost':1}),
 	'e': MenuGame.execute_queued_actions,
 	'a': MenuGame.clear_queued_actions
 }

@@ -24,7 +24,7 @@ class FrameWorld(Frame):
 				position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']
 				if not position_info:
 					raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any world position')
-				if entity.get_attribute(AttributeTag.Player):
+				if entity.get_attribute(AttributeTag.Player) or entity.get_attribute(AttributeTag.HostileProgram):
 					self.draw_entity_as_character(entity)	
 				elif entity.get_attribute(AttributeTag.ProgramMemory):
 					self.draw_entity_as_memory(entity)
