@@ -19,6 +19,7 @@ class EntityManager:
 		self.update_timer = 0
 		self.update_delay = 200
 		self.queued_actions = []
+		self.action_history = []
 		self.is_executing = False
 
 	#walk the subclass tree for Behavior and instantiate a copy of all of its most-derived subclasses
@@ -32,6 +33,11 @@ class EntityManager:
 
 	def queue_action(self, action):
 		self.queued_actions.append(action)
+		self.action_history.append(action)
+
+	def load_action_history(self, history):
+		for action in history:
+			self.process_single_queued_action(action)
 
 	def get_new_entity_id(self):
 		self.newest_entity_id += 1

@@ -45,10 +45,7 @@ class MenuGame(Menu):
 
 		#try and load an action history. If that fails, try to load a save game state. 
 		#If for either reason we didn't load a save game state, initialize a new entity manager and put in a player.
-		loaded_action_history = self.try_load_action_history()
-		if not loaded_action_history:
-			self.entity_manager = self.try_load_savegame()
-
+		self.entity_manager = self.try_load_savegame()
 		if not self.entity_manager:
 			#currently hardcoded to test player movement
 			self.entity_manager = EntityManager(self)
@@ -70,6 +67,7 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0)})
 					])
 				)
+			self.try_load_action_history()
 
 		self.frame_manager = FrameManager(self)
 
@@ -147,7 +145,7 @@ class MenuGame(Menu):
 
 		save_file = open('action_history.sav', 'r')
 		action_history = pickle.load(save_file)
-		self.action_history = action_history
+		self.entity_manager.load_action_history(action_history)
 		self.game_state = GameState.Loading
 		return True
 
@@ -157,7 +155,7 @@ class MenuGame(Menu):
 
 	def save_action_history(self):
 		save_file = open('action_history.sav', 'w')
-		pickle.dump(self.action_history, save_file)
+		pickle.dump(self.entity_manager.action_history, save_file)
 
 	def flag_for_exit(self):
 		self.flagged_exit = True
