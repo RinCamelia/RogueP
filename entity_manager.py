@@ -1,8 +1,11 @@
 import libtcodpy as libtcod
-from model.behavior import PlayerMovementBehavior
 from ui.ui_event import UIEvent, UIEventType
+from model.behaviors.behavior_program_movement import ProgramMovementBehavior
+from model.behaviors.behavior_program_memory import ProgramMemoryAddBehavior, ProgramMemoryRemoveBehavior
+from model.behaviors.behavior_ai_randomwalk import AIRandomWalkBehavior
+from model.attribute import AttributeTag
 
-#Entity manager does two things right now: 1. manages game state entities (including ID assignment, fetching by ID, and )
+#Entity manager does two things right now: 1. manages game state entities (including ID assignment, fetching by ID, and removing by id) and 2: input queue processing when told to by MenuGame
 #I just moved that code here and thinking back on it, it may not have been strictly necessary, but it makes keeping the internal details of actually mutating model state in one spot
 #Or perhaps I just need to rename this again to ModelManger or something, the alternative is moving open a lot more behavior management functionality to MenuGame
 class EntityManager:
@@ -21,7 +24,10 @@ class EntityManager:
 	#walk the subclass tree for Behavior and instantiate a copy of all of its most-derived subclasses
 	def get_behaviors(self):
 		results = []
-		results.append(PlayerMovementBehavior(self))
+		results.append(ProgramMemoryAddBehavior(self))
+		results.append(ProgramMemoryRemoveBehavior(self))
+		results.append(ProgramMovementBehavior(self))
+		results.append(AIRandomWalkBehavior(self))
 		return results
 
 	def queue_action(self, action):
@@ -40,6 +46,10 @@ class EntityManager:
 		if filtered != []:
 			return filtered[0]
 		raise IndexError('attempted to get nonexistent entity with ID ' + str(id))
+
+	def get_entities_by_position(self, position):
+		return filter(lambda ent: ent.get_attribute(AttributeTag.WorldPosition) and ent.get_attribute(AttributeTag.WorldPosition).data['value'] == position, self.entities)
+
 
 	def remove_entity_by_id(self, id):
 		self.entities = filter(lambda ent: ent.id != id, self.entities)	
@@ -60,7 +70,8 @@ class EntityManager:
 
 	def process_single_queued_action(self, action):
 		resulting_actions = self.handle_action(action)
-
+		for behavior in self.behaviors:
+			resulting_actions.extend(behavior.generate_actions())
 		while len(resulting_actions) > 0:
 			temp_action_list = []
 			for resulting_action in resulting_actions:

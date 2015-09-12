@@ -9,6 +9,7 @@ next:
 
 short term:
 
+*figure out introspection or other method that auto imports all behavior subclasses for execution so i don't have to re-add them
 *Start writing utility code to do things like find adjacent entities, get the player, etc. to cut down on code repetition
 *properly offset world frame/action overlay frame from top left
  *not really needed until pseudoterminal and info pane added
@@ -29,7 +30,6 @@ medium term:
 *Decide an explicit place for UI initialization code to minimize the burden on having a ridiculously huge MenuGame.__init__
 *Break out world generation into its own code once I get that far (again, to reduce size on MenuGame.__init)
 *Pull out saving code into more distinct code path to support things like RNG initialization and such
-*Speaking of world generation, make actual world generation
 *Re-investigate introspection to scrape for behavior subclasses, or some other non hard coded way
 *Start looking at how to manage mouse input contextually
 *Figure out how to set just the foreground or background color of a tile without changing the character (currently thinking I need a layer on the very top and calls into frame manager to queue tile setting)

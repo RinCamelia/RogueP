@@ -56,7 +56,7 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
 						Attribute(AttributeTag.Visible),
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
-						Attribute(AttributeTag.MaxProgramSize, {'value': 20}),
+						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
 						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(255,0,255)})
 					])
@@ -168,6 +168,8 @@ class MenuGame(Menu):
 		action_cost = action.data['cost']
 		if self.queued_actions_cost_so_far + action_cost <= player_max_actions:
 			self.queued_actions_cost_so_far += action_cost
+			#manually attach the player as the target_id for now - this will need to change when options other than movement are implemented
+			action.data['target_id'] = player.id
 			self.entity_manager.queue_action(action)
 			self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueAdd, {'action': action}))
 

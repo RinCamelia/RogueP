@@ -1,20 +1,17 @@
 import libtcodpy as libtcod
 from vec2d import Vec2d
-from action import ActionTag
-from attribute import Attribute, AttributeTag
-from entity import Entity
+from model.action import ActionTag
+from model.attribute import Attribute, AttributeTag
+from model.entity import Entity
 from math import sqrt, fabs
 from ui.frame_world import FrameWorld
 
-class Behavior:
+class Behavior(object):
 	def __init__(self, manager):
 		self.manager = manager
 
-	def apply_to_entity(self, entity):
-		pass
-
-	def apply_to_all_entities(self):
-		pass
+	def generate_actions(self):
+		return []
 
 	def handle_action(self, action):
 		return []

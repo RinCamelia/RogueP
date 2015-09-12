@@ -11,6 +11,7 @@ class AttributeTag(Enum):
 	WorldPosition = 8
 	MaxProgramSize = 9
 	ClockRate = 10
+	WorldTile = 11
 
 class Attribute:
 	def __str__(self):
