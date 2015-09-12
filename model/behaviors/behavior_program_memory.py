@@ -15,9 +15,8 @@ class ProgramMemoryRemoveBehavior(Behavior):
 		memory_at_position = filter(lambda ent: is_owned_memory(parent_id, ent), self.manager.get_entities_by_position(position))
 		if len(memory_at_position) > 0:
 			#will remove multiple copies of memory, best to be safe and do so to trim down on excess floating memory
-			#may shoot me in the foot later if i actually have memory duplication somewhere along the line
+			#may shoot me in the foot later if i actually have memory duplication bugs somewhere along the line
 			for entity in memory_at_position:
-				print 'removing entity with position ' + str(entity.get_attribute(AttributeTag.WorldPosition).data['value'])
 				self.manager.remove_entity_by_id(entity.id)
 
 

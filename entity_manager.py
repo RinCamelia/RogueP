@@ -17,7 +17,7 @@ class EntityManager:
 		self.parent_menu = parent_menu
 
 		self.update_timer = 0
-		self.update_delay = 500
+		self.update_delay = 200
 		self.queued_actions = []
 		self.is_executing = False
 
