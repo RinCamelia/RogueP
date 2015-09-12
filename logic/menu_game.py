@@ -43,8 +43,7 @@ class MenuGame(Menu):
 		self.entity_manager = None
 		self.game_state = GameState.TakingInput
 
-		#try and load an action history. If that fails, try to load a save game state. 
-		#If for either reason we didn't load a save game state, initialize a new entity manager and put in a player.
+		#try and load a save game. if that fails, initialize a baseline entity manager and try to feed in an action history. If both fail, the game simply ends up in a newgame state
 		self.entity_manager = self.try_load_savegame()
 		if not self.entity_manager:
 			#currently hardcoded to test player movement
@@ -55,7 +54,7 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(255,0,255)})
+						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black})
 					])
 				)
 			self.entity_manager.add_entity(Entity([
@@ -64,7 +63,7 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(40, 20)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0)})
+						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black})
 					])
 				)
 			self.try_load_action_history()

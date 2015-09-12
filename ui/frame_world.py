@@ -38,7 +38,7 @@ class FrameWorld(Frame):
 		draw_info = entity.get_attribute(AttributeTag.DrawInfo)
 		if not draw_info:
 			raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any drawing information')
-		libtcod.console_put_char(0, position_info.x, position_info.y, chr(draw_info.data['character']), libtcod.BKGND_NONE)
+		libtcod.console_put_char_ex(0, position_info.x, position_info.y, chr(draw_info.data['character']), draw_info.data['fore_color'], draw_info.data['back_color'])
 
 	def draw_entity_as_memory(self, entity):
 
@@ -103,4 +103,6 @@ class FrameWorld(Frame):
 			render_character = 180
 		else:
 			render_character = 197
-		libtcod.console_put_char(0, entity_position.x, entity_position.y, chr(render_character), libtcod.BKGND_NONE)
+
+		our_parent_draw_info = our_parent.get_attribute(AttributeTag.DrawInfo)
+		libtcod.console_put_char_ex(0, entity_position.x, entity_position.y, chr(render_character), our_parent_draw_info.data['fore_color'], our_parent_draw_info.data['back_color'])

@@ -3,6 +3,7 @@ TODO
 next:
 
 *Implement foreground and background coloring for world entities
+*Revise action clock frame background
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *create a command details pane
