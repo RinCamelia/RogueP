@@ -2,8 +2,6 @@ TODO
 
 next:
 
-*Implement foreground and background coloring for world entities
-*Revise action clock frame background
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *create a command details pane
@@ -54,3 +52,6 @@ Completed thus far (started 9/9):
 *figure out introspection or other method that auto imports all behavior subclasses for execution so i don't have to re-add them
  *First shot failed, python is incredibly obtuse at this
 *Start writing utility code to do things like find adjacent entities, get the player, etc. to cut down on code repetition
+*Implement foreground and background coloring for world entities
+*Revise action clock frame background
+*Add max actions/cycle line on action clock frame

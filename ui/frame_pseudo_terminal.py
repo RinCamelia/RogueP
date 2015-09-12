@@ -21,12 +21,13 @@ class FramePseudoTerminal(Frame):
 		self.blinking_cursor = "_"
 		self.cursor_blink_delay = 500
 		self.cursor_timer = 0
-		self.max_command_size = 10
 		self.console_command_history = []
 		self.console_max_history_length = terminal_height - 2
 		self.input_enabled = True
 
 		Frame.__init__(self, root_console_width, root_console_height, terminal_width, terminal_height, frame_manager)
+		#-1 to account for border tile
+		self.max_command_size = self.width - len(self.prompt_string) - 1 
 
 		libtcod.console_set_key_color(self.console, libtcod.Color(255, 0, 255))
 

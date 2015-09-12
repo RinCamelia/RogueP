@@ -38,8 +38,12 @@ class FrameActionClock(Frame):
 			for cell in row:
 				if cell['fore_r'] == 255 and cell['fore_g'] == 0 and cell['fore_b'] == 0:
 					self.remaining_actions_display_position = Vec2d(x, y)
+				if cell['fore_r'] == 0 and cell['fore_g'] == 0 and cell['fore_b'] == 255:
+					self.max_actions_display_position = Vec2d(x, y)
 				elif cell['fore_r'] == 255 and cell['fore_g'] == 255 and cell['fore_b'] == 0:
 					queued_actions_display_start = Vec2d(x, y)
+				elif cell['fore_r'] == 0 and cell['fore_g'] == 255 and cell['fore_b'] == 0:
+					queued_actions_display_end = Vec2d(x, y)
 				elif cell['fore_r'] == 0 and cell['fore_g'] == 255 and cell['fore_b'] == 0:
 					queued_actions_display_end = Vec2d(x, y)
 				y += 1
@@ -66,6 +70,7 @@ class FrameActionClock(Frame):
 
 		libtcod.console_set_alignment(self.console, libtcod.LEFT)
 		libtcod.console_print(self.console, self.remaining_actions_display_position[0], self.remaining_actions_display_position[1], str(self.max_actions - self.current_action_count))
+		libtcod.console_print(self.console, self.max_actions_display_position[0], self.max_actions_display_position[1], str(self.max_actions))
 
 		for x in range(self.queued_actions_bar_width + 1):
 			if x <= self.highlighted_tile_count and self.highlighted_tile_count > 0:
