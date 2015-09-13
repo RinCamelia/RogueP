@@ -1,16 +1,15 @@
 import libtcodpy as libtcod
-from vec2d import Vec2d
 from model.action import ActionTag
 from model.attribute import Attribute, AttributeTag
 from model.entity import Entity
-from math import sqrt, fabs
 from ui.frame_world import WorldRenderType
 from behavior import Behavior
+
+#note: an explicit from [] import * because if I don't, using entity_utilities functions in lambdas throws a fit
 from model.entity_utilities import *
 
 # TODO: pull this code out into a more generic one for programs
 class ProgramMemoryRemoveBehavior(Behavior):
-
 	def remove_memory(self, parent_id, position):
 		memory_at_position = filter(lambda ent: is_owned_memory(parent_id, ent), self.manager.get_entities_by_position(position))
 		if len(memory_at_position) > 0:

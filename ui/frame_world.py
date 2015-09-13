@@ -15,16 +15,20 @@ class WorldRenderType:
 # if you want to see the world state objects and behaviors, see the model folder
 class FrameWorld(Frame):
 
-	def __init__(self, root_console_width, root_console_height, frame_manager):
-		Frame.__init__(self, root_console_width, root_console_height)
+	def __init__(self, root_console_width, root_console_height, world_x_start, world_y_start, frame_manager):
+		print root_console_width - world_x_start
+		print root_console_height - world_y_start
+		Frame.__init__(self, root_console_width, root_console_height, root_console_width - world_x_start, root_console_height - world_y_start, frame_manager)
 		self.entity_manager = frame_manager.parent_menu.entity_manager
+		self.world_x_start = world_x_start
+		self.world_y_start = world_y_start
 
 	def update(self, delta):
 		# may need update logic, for now, nothing
 		pass
 
 	def draw(self):
-		libtcod.console_clear(0)
+		libtcod.console_clear(self.console)
 
 		#handy thing about this is it should help farther down the line when I go to implement FOV
 		render_data = []
@@ -46,12 +50,18 @@ class FrameWorld(Frame):
 			if to_render['draw_type'] in render_type_dict:
 				render_type_dict[to_render['draw_type']](self, to_render['entity'])
 
+		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, self.world_x_start, self.world_y_start)
+
+		#renders a ! at the topleftmost screen tile of where the world is set to render
+		#uncomment if things break
+		#libtcod.console_put_char_ex(0, self.world_x_start, self.world_y_start, ord('!'), libtcod.white, libtcod.black)
+
 	def draw_as_character(self, entity):
 		position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']
 		draw_info = entity.get_attribute(AttributeTag.DrawInfo)
 		if not draw_info:
 			raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any drawing information')
-		libtcod.console_put_char_ex(0, position_info.x, position_info.y, chr(draw_info.data['character']), draw_info.data['fore_color'], draw_info.data['back_color'])
+		libtcod.console_put_char_ex(self.console, position_info.x, position_info.y, chr(draw_info.data['character']), draw_info.data['fore_color'], draw_info.data['back_color'])
 
 	def draw_as_memory(self, entity):
 
@@ -118,7 +128,7 @@ class FrameWorld(Frame):
 			render_character = 197
 
 		our_parent_draw_info = our_parent.get_attribute(AttributeTag.DrawInfo)
-		libtcod.console_put_char_ex(0, entity_position.x, entity_position.y, chr(render_character), our_parent_draw_info.data['fore_color'], our_parent_draw_info.data['back_color'])
+		libtcod.console_put_char_ex(self.console, entity_position.x, entity_position.y, chr(render_character), our_parent_draw_info.data['fore_color'], our_parent_draw_info.data['back_color'])
 
 render_type_dict = {
 	WorldRenderType.Character: FrameWorld.draw_as_character,

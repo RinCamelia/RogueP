@@ -1,11 +1,10 @@
 import libtcodpy as libtcod
 from vec2d import Vec2d
 from model.action import Action, ActionTag
-from model.attribute import Attribute, AttributeTag
-from model.entity import Entity
-from math import sqrt, fabs
-from ui.frame_world import FrameWorld
+from model.attribute import AttributeTag
 from behavior import Behavior
+
+#note: an explicit from [] import * because if I don't, using entity_utilities functions in lambdas throws a fit
 from model.entity_utilities import *
 
 # TODO: pull this code out into a more generic one for programs

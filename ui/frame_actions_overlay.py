@@ -6,9 +6,11 @@ from ui_event import UIEventType
 
 class FrameActionsOverlay(Frame):
 
-	def __init__(self, root_console_width, root_console_height, frame_manager):
+	def __init__(self, root_console_width, root_console_height, world_x_start, world_y_start, frame_manager):
 		#TODO manage offset of code
-		Frame.__init__(self, root_console_width, root_console_height, root_console_width, root_console_height, frame_manager)
+		Frame.__init__(self, root_console_width, root_console_height, root_console_width - world_x_start, root_console_height - world_y_start, frame_manager)
+		self.world_x_start = world_x_start
+		self.world_y_start = world_y_start
 		self.entity_manager = frame_manager.parent_menu.entity_manager
 		self.actions = []
 		libtcod.console_set_default_background(self.console, libtcod.Color(255, 0, 255))
@@ -35,4 +37,4 @@ class FrameActionsOverlay(Frame):
 			target_position = player_position + position_delta
 			libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, chr(draw_info.data['character']), libtcod.grey, libtcod.black)
 
-		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, 0, 0)
+		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, self.world_x_start, self.world_y_start)

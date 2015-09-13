@@ -51,7 +51,7 @@ class MenuGame(Menu):
 			self.entity_manager.add_entity(Entity([
 						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
 						Attribute(AttributeTag.Visible),
-						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
+						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(10, 10)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
 						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
@@ -60,7 +60,7 @@ class MenuGame(Menu):
 			self.entity_manager.add_entity(Entity([
 						Attribute(AttributeTag.HostileProgram),
 						Attribute(AttributeTag.Visible),
-						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(40, 20)}),
+						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(30, 10)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
 						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
@@ -70,13 +70,15 @@ class MenuGame(Menu):
 
 		self.frame_manager = FrameManager(self)
 
-		world_frame = FrameWorld(console_width, console_height, self.frame_manager)
-		self.frame_manager.add_frame(world_frame)
-		self.frame_manager.add_frame(FrameActionsOverlay(console_width, console_height, self.frame_manager))
-
 		action_clock = FrameActionClock(console_width, console_height, self.frame_manager)
+		world_frame = FrameWorld(console_width, console_height, action_clock.width, action_clock.height, self.frame_manager)
+		world_overlay = FrameActionsOverlay(console_width, console_height, action_clock.width, action_clock.height, self.frame_manager)
+
+		self.frame_manager.add_frame(world_frame)
+		self.frame_manager.add_frame(world_overlay)
 		self.frame_manager.add_frame(action_clock)
 		self.frame_manager.add_frame(FramePseudoTerminal(console_width, console_height, action_clock.width, console_height - action_clock.height, self.frame_manager))
+
 
 
 		# generate an initial set of UI events to set up the UI
