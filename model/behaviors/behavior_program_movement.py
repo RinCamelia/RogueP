@@ -25,8 +25,6 @@ class ProgramMovementBehavior(Behavior):
 
 			if not entities_occupy_position(program.id, entities_at_new_position) and position_delta != Vec2d(0, 0):
 				# -1 here because the program itself counts for purposes of max memory size
-				print 'current allocated memory segments (minus program): ' + str(len(existing_memory)) + ', max memory segments: ' + str(program.get_attribute(AttributeTag.MaxProgramSize).data['value'])
-				print str(len(entities_at_new_position))
 				if len(filter(lambda ent: is_owned_memory(program.id, ent), entities_at_new_position)) > 0:
 					actions.append(Action(ActionTag.ProgramMemoryRemove, {'parent_id': program.id, 'position': new_position}))
 				elif len(existing_memory) >= program.get_attribute(AttributeTag.MaxProgramSize).data['value'] - 1:
