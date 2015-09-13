@@ -12,8 +12,6 @@ next:
 
 short term:
 
-*properly offset world frame/action overlay frame from top left
- *not really needed until pseudoterminal and info pane added
 *Make more use of .xp files and such to initialize UI (also pull in more appropriate styling, i'm more or less ignoring the mockup styles I made for now)
 *either write single info pane UI frame or different kinds of command pane that render over the rest of the UI
  *At this point I'm thinking a bunch of frames and a single dummy frame that renders a BG
@@ -58,3 +56,5 @@ Completed thus far (started 9/9):
 *Implement foreground and background coloring for world entities
 *Revise action clock frame background
 *Add max actions/cycle line on action clock frame
+*properly offset world frame/action overlay frame from top left
+ *not really needed until pseudoterminal and info pane added

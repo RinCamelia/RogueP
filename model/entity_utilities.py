@@ -18,4 +18,4 @@ Takes a list of entities filtered to a single world position and the entity id o
 Returns a bool indicating whether the tile is considered occupied already for the purposes of the entity with ID provided. Checks world tiles, for hostile programs, etc. etc.
 """
 def entities_occupy_position(parent_id, entities):
-	return len(filter(lambda ent: ent.get_attribute(AttributeTag.HostileProgram) != False or is_hostile_memory(parent_id, ent), entities)) != 0
+	return len(filter(lambda ent: ent.get_attribute(AttributeTag.HostileProgram) != False or is_hostile_memory(parent_id, ent) or ent.get_attribute(AttributeTag.WorldTileWall), entities)) != 0

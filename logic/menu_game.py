@@ -51,21 +51,41 @@ class MenuGame(Menu):
 			self.entity_manager.add_entity(Entity([
 						Attribute(AttributeTag.Player, {'max_actions_per_cycle': max_actions}),
 						Attribute(AttributeTag.Visible),
-						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(10, 10)}),
+						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(2, 2)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
+						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'z_level': 2, 'draw_type': WorldRenderType.Character})
 					])
 				)
 			self.entity_manager.add_entity(Entity([
 						Attribute(AttributeTag.HostileProgram),
 						Attribute(AttributeTag.Visible),
-						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(30, 10)}),
+						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(18, 18)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
+						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'z_level': 2, 'draw_type': WorldRenderType.Character})
 					])
 				)
+			for x in range(20):
+				for y in range(20):
+					if x == 0 or x == 19 or y == 0 or y == 19:
+						self.entity_manager.add_entity(Entity([
+									Attribute(AttributeTag.WorldTileWall),
+									Attribute(AttributeTag.Visible),
+									Attribute(AttributeTag.WorldPosition, {'value': Vec2d(x, y)}),
+									Attribute(AttributeTag.DrawInfo, {'character': ord('#'), 'fore_color': libtcod.Color(205,255,205), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
+								])
+							)
+					else:
+						self.entity_manager.add_entity(Entity([
+									Attribute(AttributeTag.WorldTileEmpty),
+									Attribute(AttributeTag.Visible),
+									Attribute(AttributeTag.WorldPosition, {'value': Vec2d(x, y)}),
+									Attribute(AttributeTag.DrawInfo, {'character': ord('.'), 'fore_color': libtcod.Color(205,255,205), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
+								])
+							)
+
+
 			self.try_load_action_history()
 
 		self.frame_manager = FrameManager(self)

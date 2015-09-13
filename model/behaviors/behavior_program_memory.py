@@ -40,7 +40,7 @@ class ProgramMemoryAddBehavior(Behavior):
 						Attribute(AttributeTag.ProgramMemory, {'parent_id': parent_id}),
 						Attribute(AttributeTag.Visible),
 						Attribute(AttributeTag.WorldPosition, {'value': position}),
-						Attribute(AttributeTag.DrawInfo, {'draw_type': WorldRenderType.Memory, 'z_level': 1})
+						Attribute(AttributeTag.DrawInfo, {'draw_type': WorldRenderType.Memory, 'z_level': 2})
 					]))
 
 		return []
