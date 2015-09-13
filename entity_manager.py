@@ -11,16 +11,19 @@ from model.attribute import AttributeTag
 class EntityManager:
 	def __init__(self, parent_menu):
 		self.behaviors = self.get_behaviors()
-		self.entities = []
+		self.entities = {}
+		self.world_tiles = []
 		self.newest_entity_id = 0
 
 		self.parent_menu = parent_menu
 
 		self.update_timer = 0
-		self.update_delay = 200
+		self.update_delay = 10
 		self.queued_actions = []
 		self.action_history = []
 		self.is_executing = False
+
+
 
 	#walk the subclass tree for Behavior and instantiate a copy of all of its most-derived subclasses
 	def get_behaviors(self):
@@ -45,20 +48,19 @@ class EntityManager:
 
 	def add_entity(self, entity):
 		entity.id = self.get_new_entity_id()
-		self.entities.append(entity)
+		self.entities[entity.id] = entity
 
 	def get_entity_by_id(self, id):
-		filtered = filter(lambda ent: ent.id == id, self.entities)
-		if filtered != []:
-			return filtered[0]
-		raise IndexError('attempted to get nonexistent entity with ID ' + str(id))
+		if id in self.entities:
+			return self.entities[id]
+		raise IndexError('attempted to get entity with ID ' + str(id) + ', which is nonexistent')
 
 	def get_entities_by_position(self, position):
-		return filter(lambda ent: ent.get_attribute(AttributeTag.WorldPosition) and ent.get_attribute(AttributeTag.WorldPosition).data['value'] == position, self.entities)
+		return filter(lambda ent: ent.get_attribute(AttributeTag.WorldPosition) and ent.get_attribute(AttributeTag.WorldPosition).data['value'] == position, self.entities.values())
 
 
 	def remove_entity_by_id(self, id):
-		self.entities = filter(lambda ent: ent.id != id, self.entities)	
+		del self.entities[id]
 
 	def handle_action(self, action):
 		action_results = []
@@ -89,8 +91,9 @@ class EntityManager:
 
 		if self.is_executing and len(self.queued_actions) > 0:
 			self.update_timer += delta
-
 			if self.update_timer >= self.update_delay:
+				pre_action_milli = libtcod.sys_elapsed_milli()
+
 				self.update_timer = 0
 				current_action = self.queued_actions.pop()
 				self.process_single_queued_action(current_action)
@@ -99,3 +102,6 @@ class EntityManager:
 				self.parent_menu.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueRemove, {'action': current_action}))
 				if len(self.queued_actions) == 0:
 					self.is_executing = False
+
+				post_action_milli = libtcod.sys_elapsed_milli()
+				print 'single action took ' + str(post_action_milli - pre_action_milli) + ' MS'

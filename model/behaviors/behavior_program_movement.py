@@ -17,7 +17,7 @@ class ProgramMovementBehavior(Behavior):
 			position_delta = action.data['value']
 			new_position = program.get_attribute(AttributeTag.WorldPosition).data['value'] + position_delta
 
-			existing_memory = filter(lambda ent: is_owned_memory(program.id, ent), self.manager.entities)
+			existing_memory = program.get_attribute(AttributeTag.OwnedMemory).data['segments']
 			entities_at_new_position = self.manager.get_entities_by_position(new_position)
 
 			if position_delta[0] < -1 or position_delta[0] > 1 or position_delta[1] < -1 or position_delta [1] > 1 or (position_delta[0] != 0 and position_delta[1] != 0):

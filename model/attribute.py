@@ -13,6 +13,7 @@ class AttributeTag(Enum):
 	ClockRate = 10
 	WorldTileEmpty = 11
 	WorldTileWall = 12
+	OwnedMemory = 13
 
 class Attribute:
 	def __str__(self):

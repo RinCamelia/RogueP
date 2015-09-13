@@ -30,7 +30,7 @@ class FrameWorld(Frame):
 
 		#handy thing about this is it should help farther down the line when I go to implement FOV
 		render_data = []
-		for entity in self.entity_manager.entities:
+		for id, entity in self.entity_manager.entities.iteritems():
 			if entity.get_attribute(AttributeTag.Visible):
 				position_info = entity.get_attribute(AttributeTag.WorldPosition)
 				if not position_info:
@@ -82,7 +82,7 @@ class FrameWorld(Frame):
 			'west': False
 		}
 
-		for other in self.entity_manager.entities:
+		for id, other in self.entity_manager.entities.iteritems():
 			other_position = other.get_attribute(AttributeTag.WorldPosition).data['value']
 			if ent_filter(other):
 				delta = entity_position - other_position

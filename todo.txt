@@ -2,7 +2,8 @@ TODO
 
 next:
 
-*implement basic code for world tiles
+*Redo code to use an explicit world tile array, not a blind entity list
+ *this method is cool and relatively idiomatic but also scales horribly
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *create a command details pane
@@ -22,6 +23,7 @@ medium term:
 
 *Revisit introspection to scrape for behaviors
 *explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
+ *Testing note: Tried dynamic world wall calculation. Failed spectacularly on performance grounds. 
 *Decide an explicit place for UI initialization code to minimize the burden on having a ridiculously huge MenuGame.__init__
 *Break out world generation into its own code once I get that far (again, to reduce size on MenuGame.__init)
 *Pull out saving code into more distinct code path to support things like RNG initialization and such

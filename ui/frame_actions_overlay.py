@@ -27,7 +27,7 @@ class FrameActionsOverlay(Frame):
 	#is mostly temporary proof of concept - will need to be a lot more nuanced to render library executes, memory scans, etc etc
 	def draw(self):
 		libtcod.console_clear(self.console)
-		player = filter(lambda ent: ent.get_attribute(AttributeTag.Player), self.entity_manager.entities)[0]
+		player = filter(lambda ent: ent[1].get_attribute(AttributeTag.Player), self.entity_manager.entities.iteritems())[0][1]
 		player_position = player.get_attribute(AttributeTag.WorldPosition).data['value']
 		position_delta = Vec2d(0, 0)
 
