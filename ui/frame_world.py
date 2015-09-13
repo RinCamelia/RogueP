@@ -2,6 +2,12 @@ import libtcodpy as libtcod
 from model.attribute import AttributeTag
 from frame import Frame
 from vec2d import Vec2d
+from enum import Enum
+
+class WorldRenderType:
+	Character = 1
+	Memory = 2
+	WorldTile = 3
 
 # Draws world state to the screen
 # If you want input management, see frame_pseudo_terminal
@@ -18,29 +24,36 @@ class FrameWorld(Frame):
 		pass
 
 	def draw(self):
-		clear_entities = []
 		libtcod.console_clear(0)
+
+		#handy thing about this is it should help farther down the line when I go to implement FOV
+		render_data = []
 		for entity in self.entity_manager.entities:
 			if entity.get_attribute(AttributeTag.Visible):
-				position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']
+				position_info = entity.get_attribute(AttributeTag.WorldPosition)
 				if not position_info:
 					raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any world position')
+				draw_info = entity.get_attribute(AttributeTag.DrawInfo)			
+				if not draw_info:
+					raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any draw info')
+				render_data.append({'draw_type': draw_info.data['draw_type'], 'z_level':draw_info.data['z_level'],'entity': entity})
 
-				#so, this feels really kludgy right now, I wanted to attribute-attached functions to control rendering but pickle doesn't allow serialization of those
-				#when I get back to world rendering code I will probably convert this to a RenderType enum and a dictionary map to functions
-				if entity.get_attribute(AttributeTag.Player) or entity.get_attribute(AttributeTag.HostileProgram):
-					self.draw_entity_as_character(entity)	
-				elif entity.get_attribute(AttributeTag.ProgramMemory):
-					self.draw_entity_as_memory(entity)
+		#z-sort the entities we're rendering so that things like world tiles can be drawn behind entities on those tiles
+		render_data.sort(lambda data,other: cmp(data['z_level'], other['z_level']))
 
-	def draw_entity_as_character(self, entity):
+
+		for to_render in render_data:
+			if to_render['draw_type'] in render_type_dict:
+				render_type_dict[to_render['draw_type']](self, to_render['entity'])
+
+	def draw_as_character(self, entity):
 		position_info = entity.get_attribute(AttributeTag.WorldPosition).data['value']
 		draw_info = entity.get_attribute(AttributeTag.DrawInfo)
 		if not draw_info:
 			raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any drawing information')
 		libtcod.console_put_char_ex(0, position_info.x, position_info.y, chr(draw_info.data['character']), draw_info.data['fore_color'], draw_info.data['back_color'])
 
-	def draw_entity_as_memory(self, entity):
+	def draw_as_memory(self, entity):
 
 		entity_position = entity.get_attribute(AttributeTag.WorldPosition).data['value']
 		has_north_connection = False
@@ -106,3 +119,8 @@ class FrameWorld(Frame):
 
 		our_parent_draw_info = our_parent.get_attribute(AttributeTag.DrawInfo)
 		libtcod.console_put_char_ex(0, entity_position.x, entity_position.y, chr(render_character), our_parent_draw_info.data['fore_color'], our_parent_draw_info.data['back_color'])
+
+render_type_dict = {
+	WorldRenderType.Character: FrameWorld.draw_as_character,
+	WorldRenderType.Memory: FrameWorld.draw_as_memory
+}

@@ -14,7 +14,7 @@ from model.action import Action, ActionTag
 
 from ui.frame_manager import FrameManager
 from ui.ui_event import UIEvent, UIEventType
-from ui.frame_world import FrameWorld
+from ui.frame_world import FrameWorld, WorldRenderType
 from ui.frame_actions_overlay import FrameActionsOverlay
 from ui.frame_action_clock import FrameActionClock
 from ui.frame_pseudo_terminal import FramePseudoTerminal
@@ -54,7 +54,7 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 20)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black})
+						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
 					])
 				)
 			self.entity_manager.add_entity(Entity([
@@ -63,7 +63,7 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(40, 20)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black})
+						Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'z_level': 1, 'draw_type': WorldRenderType.Character})
 					])
 				)
 			self.try_load_action_history()
