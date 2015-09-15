@@ -69,7 +69,7 @@ class MenuGame(Menu):
 							Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'z_level': 2, 'draw_type': WorldRenderType.Character})
 						])
 					)
-				
+
 			self.try_load_action_history()
 
 		self.entity_manager.player_id = 1
@@ -177,7 +177,6 @@ class MenuGame(Menu):
 			action.data['target_id'] = player.id
 			self.entity_manager.queue_action(action)
 			self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueAdd, {'action': action}))
-
 
 	def execute_queued_actions(self):
 		self.game_state = GameState.Executing

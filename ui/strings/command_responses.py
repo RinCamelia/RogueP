@@ -1,8 +1,8 @@
 from ui.ui_event import UIEventType
 
 command_response_table = {
-	UIEventType.ActionQueueClear: "(clear queue)",
-	UIEventType.ActionQueueRemove: "(call %)",
-	UIEventType.ActionQueueAdd: "(schedule %)",
-	UIEventType.InvalidCommand: "(bad command)"
+	UIEventType.ActionQueueClear: "Queue cleared",
+	UIEventType.ActionQueueRemove: "Calling function",
+	UIEventType.ActionQueueAdd: "Added function call",
+	UIEventType.InvalidCommand: "Bad command {}"
 }

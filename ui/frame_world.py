@@ -28,6 +28,9 @@ class FrameWorld(Frame):
 	def draw(self):
 		libtcod.console_clear(self.console)
 
+		for y in range(len(self.entity_manager.world_tiles)):
+			for x in range(len(self.entity_manager.world_tiles[y])):
+				self.draw_world_tile(x, y, self.entity_manager.world_tiles[x][y]['tile'])
 		#handy thing about this is it should help farther down the line when I go to implement FOV
 		render_data = []
 		for id, entity in self.entity_manager.entities.iteritems():
@@ -61,6 +64,11 @@ class FrameWorld(Frame):
 			raise LookupError('entity ' + str(entity) + ' is flagged as visible, but does not have any drawing information')
 		libtcod.console_put_char_ex(self.console, position_info.x, position_info.y, chr(draw_info.data['character']), draw_info.data['fore_color'], draw_info.data['back_color'])
 
+	def draw_world_tile(self, x, y, tile_type):
+		character = '.'
+		if tile_type == WorldTile.Wall:
+			character = '#'
+		libtcod.console_put_char_ex(self.console, x, y, character, libtcod.white, libtcod.black)
 
 	def draw_as_memory(self, entity):
 		entity_position = entity.get_attribute(AttributeTag.WorldPosition).data['value']
@@ -121,6 +129,8 @@ class FrameWorld(Frame):
 			render_character = 197
 
 		return render_character
+
+
 render_type_dict = {
 	WorldRenderType.Character: FrameWorld.draw_as_character,
 	WorldRenderType.Memory: FrameWorld.draw_as_memory,

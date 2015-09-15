@@ -24,6 +24,7 @@ class FramePseudoTerminal(Frame):
 		self.console_command_history = []
 		self.console_max_history_length = terminal_height - 2
 		self.input_enabled = True
+		self.last_command = ""
 
 		Frame.__init__(self, root_console_width, root_console_height, terminal_width, terminal_height, frame_manager)
 		#-1 to account for border tile
@@ -56,6 +57,7 @@ class FramePseudoTerminal(Frame):
 			elif key.vk == libtcod.KEY_ENTER and self.input_command != "":
 				self.add_line_to_history(self.prompt_string + self.input_command)
 				self.frame_manager.parent_menu.handle_input_command(self.input_command)
+				self.last_command = self.input_command
 				self.input_command = ""
 			elif key.vk == libtcod.KEY_BACKSPACE:
 				self.input_command = self.input_command[:-1]
@@ -73,17 +75,26 @@ class FramePseudoTerminal(Frame):
 		if event.type == UIEventType.InputDisabled:
 			self.input_enabled = False
 		elif event.type == UIEventType.InputEnabled:
+			#add a blank line
+			self.add_line_to_history('') 
 			self.input_enabled = True
 		elif event.type == UIEventType.InvalidCommand and len(event.data['command']) > 1:
 			#if it was a non single character command and the result was not found, try splitting the command out into characters and trying each one
 			#TODO move this into command strings file
-			self.add_line_to_history("(event sequence)")
+			self.add_line_to_history('Event sequence:')
 			for char in list(event.data['command']):
+				self.last_command = ""
+				self.last_command = char
+				print char
 				self.frame_manager.parent_menu.handle_input_command(char)
 		elif event.type in command_response_table:
-			self.add_line_to_history(command_response_table[event.type])
+			if 'command' in event.data:
+				self.add_line_to_history(command_response_table[event.type].format(event.data['command']))
+			else:
+				self.add_line_to_history(command_response_table[event.type])
 
 	def add_line_to_history(self, line):
+		#remove the oldest history line - the best way I can think of to do it right now
 		if len(self.console_command_history) >= self.console_max_history_length:
 			self.console_command_history.reverse()
 			self.console_command_history.pop()

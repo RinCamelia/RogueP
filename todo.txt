@@ -2,8 +2,7 @@ TODO
 
 next:
 
-*Redo code to use an explicit world tile array, not a blind entity list
- *this method is cool and relatively idiomatic but also scales horribly
+#write basic WorldFrame rendering for world tiles and walls
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *create a command details pane
@@ -21,6 +20,7 @@ short term:
 
 medium term:
 
+*Write camera tracking code for WorldFrame
 *Revisit introspection to scrape for behaviors
 *explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
  *Testing note: Tried dynamic world wall calculation. Failed spectacularly on performance grounds. 
@@ -60,3 +60,6 @@ Completed thus far (started 9/9):
 *Add max actions/cycle line on action clock frame
 *properly offset world frame/action overlay frame from top left
  *not really needed until pseudoterminal and info pane added
+*Redo code to use an explicit world tile array, not a blind entity list
+ *this method is cool and relatively idiomatic but also scales horribly
+ *Ended up having a by-id list as well as a world tiles list
