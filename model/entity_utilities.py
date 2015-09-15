@@ -20,5 +20,5 @@ Returns a bool indicating whether the tile is considered occupied already for th
 """
 def entities_occupy_position(parent_id, position_world_data):
 	if position_world_data['tile'] != WorldTile.Empty:
-		return false
+		return True
 	return len(filter(lambda ent: ent.get_attribute(AttributeTag.HostileProgram) != False or is_hostile_memory(parent_id, ent), position_world_data['entities'])) != 0

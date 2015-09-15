@@ -81,10 +81,10 @@ class FrameWorld(Frame):
 		east = self.entity_manager.get_world_data_for_position(entity_position + Vec2d(1, 0))
 		west = self.entity_manager.get_world_data_for_position(entity_position + Vec2d(-1, 0))
 		results = {
-			'north': len(north['entities']) > 0,
-			'south': len(south['entities']) > 0,
-			'east': len(east['entities']) > 0,
-			'west': len(west['entities']) > 0
+			'north': len(filter(ent_filter, north['entities'])) > 0,
+			'south': len(filter(ent_filter, south['entities'])) > 0,
+			'east': len(filter(ent_filter, east['entities'])) > 0,
+			'west': len(filter(ent_filter, west['entities'])) > 0
 		}
 
 
