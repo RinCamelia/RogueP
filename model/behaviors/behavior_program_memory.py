@@ -11,8 +11,8 @@ from model.entity_utilities import *
 # TODO: pull this code out into a more generic one for programs
 class ProgramMemoryRemoveBehavior(Behavior):
 	def remove_memory(self, parent_id, position):
-		memory_at_position = filter(lambda ent: is_owned_memory(parent_id, ent), self.manager.get_entities_by_position(position))
 		parent = self.manager.get_entity_by_id(parent_id)
+		memory_at_position = filter(lambda ent: is_owned_memory(parent_id, ent), self.manager.get_world_data_for_position(position)['entities'])
 		if len(memory_at_position) > 0:
 			#will remove multiple copies of memory, best to be safe and do so to trim down on excess floating memory
 			#may shoot me in the foot later if i actually have memory duplication bugs somewhere along the line
@@ -34,9 +34,9 @@ class ProgramMemoryAddBehavior(Behavior):
 			position = action.data['position']
 			parent_id = action.data['parent_id']
 
-			entities_at_location = self.manager.get_entities_by_position(position)
+			world_data_for_position = self.manager.get_world_data_for_position(position)
 
-			if not entities_occupy_position(parent_id, entities_at_location):
+			if not entities_occupy_position(parent_id, world_data_for_position):
 				#todo - consider making this an explicit action instead of just chucking it into the manager? for now, this is fine
 				memory_segment = Entity([
 						Attribute(AttributeTag.ProgramMemory, {'parent_id': parent_id}),

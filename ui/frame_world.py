@@ -75,25 +75,19 @@ class FrameWorld(Frame):
 
 	def get_adjacent_entities(self, entity, ent_filter=lambda ent: True):
 		entity_position = entity.get_attribute(AttributeTag.WorldPosition).data['value']
+
+		north = self.entity_manager.get_world_data_for_position(entity_position + Vec2d(0, -1))
+		south = self.entity_manager.get_world_data_for_position(entity_position + Vec2d(0, 1))
+		east = self.entity_manager.get_world_data_for_position(entity_position + Vec2d(1, 0))
+		west = self.entity_manager.get_world_data_for_position(entity_position + Vec2d(-1, 0))
 		results = {
-			'north': False,
-			'south': False,
-			'east': False,
-			'west': False
+			'north': len(north['entities']) > 0,
+			'south': len(south['entities']) > 0,
+			'east': len(east['entities']) > 0,
+			'west': len(west['entities']) > 0
 		}
 
-		for id, other in self.entity_manager.entities.iteritems():
-			other_position = other.get_attribute(AttributeTag.WorldPosition).data['value']
-			if ent_filter(other):
-				delta = entity_position - other_position
-				if delta == Vec2d(0, -1):
-					results['south'] = True
-				elif delta == Vec2d(0, 1):
-					results['north'] = True
-				elif delta == Vec2d(-1, 0):
-					results['east'] = True
-				elif delta == Vec2d(1, 0):
-					results['west'] = True
+
 		return results
 
 	def get_connector_tile(self, adjacent_entities):

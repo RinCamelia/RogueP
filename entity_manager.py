@@ -4,6 +4,7 @@ from model.behaviors.behavior_program_movement import ProgramMovementBehavior
 from model.behaviors.behavior_program_memory import ProgramMemoryAddBehavior, ProgramMemoryRemoveBehavior
 from model.behaviors.behavior_ai_randomwalk import AIRandomWalkBehavior
 from model.attribute import AttributeTag
+from model.world_tile import WorldTile
 
 #Entity manager does two things right now: 1. manages game state entities (including ID assignment, fetching by ID, and removing by id) and 2: input queue processing when told to by MenuGame
 #I just moved that code here and thinking back on it, it may not have been strictly necessary, but it makes keeping the internal details of actually mutating model state in one spot
@@ -22,7 +23,19 @@ class EntityManager:
 		self.queued_actions = []
 		self.action_history = []
 		self.is_executing = False
+		self.make_empty_world_temp()
 
+
+	def make_empty_world_temp(self):
+		for y in range(50):
+			row = []
+			for x in range(50):
+				tile_type = WorldTile.Empty
+				if x == 0 or x == 49 or y == 0 or y == 49:
+					#make walls borders
+					tile_type = WorldTile.Wall
+				row.append({'tile': tile_type, 'entities':[]})
+			self.world_tiles.append(row)
 
 
 	#walk the subclass tree for Behavior and instantiate a copy of all of its most-derived subclasses
@@ -49,18 +62,28 @@ class EntityManager:
 	def add_entity(self, entity):
 		entity.id = self.get_new_entity_id()
 		self.entities[entity.id] = entity
+		position_attribute = entity.get_attribute(AttributeTag.WorldPosition)
+		if position_attribute:
+			position = position_attribute.data['value']
+			self.world_tiles[position[0]][position[1]]['entities'].append(entity)
 
 	def get_entity_by_id(self, id):
 		if id in self.entities:
 			return self.entities[id]
 		raise IndexError('attempted to get entity with ID ' + str(id) + ', which is nonexistent')
 
-	def get_entities_by_position(self, position):
-		return filter(lambda ent: ent.get_attribute(AttributeTag.WorldPosition) and ent.get_attribute(AttributeTag.WorldPosition).data['value'] == position, self.entities.values())
+	def get_world_data_for_position(self, position):
+		return self.world_tiles[position[0]][position[1]]
 
 
 	def remove_entity_by_id(self, id):
+		entity = self.entities[id]
 		del self.entities[id]
+		position_attribute = entity.get_attribute(AttributeTag.WorldPosition)
+		if position_attribute:
+			position = position_attribute.data['value']
+			self.world_tiles[position[0]][position[1]]['entities'].remove(entity)
+
 
 	def handle_action(self, action):
 		action_results = []
@@ -68,7 +91,6 @@ class EntityManager:
 			behavior_action_results = beh.handle_action(action)
 			if behavior_action_results:
 				action_results.extend(behavior_action_results)
-
 		return action_results
 
 	def start_execution(self):
