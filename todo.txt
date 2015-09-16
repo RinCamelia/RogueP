@@ -3,7 +3,6 @@ TODO
 next:
 
 *make a single attack things primitive to go with the move primitives
-*make an innates panel (or just stick it on the library one and make a dummy library panel)
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *create a command details pane
@@ -64,3 +63,5 @@ Completed thus far (started 9/9):
 *Redo code to use an explicit world tile array, not a blind entity list
  *this method is cool and relatively idiomatic but also scales horribly
  *Ended up having a by-id list as well as a world tiles list
+*make an innates panel (or just stick it on the library one and make a dummy library panel)
+*

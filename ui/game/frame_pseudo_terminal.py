@@ -43,16 +43,16 @@ class FramePseudoTerminal(Frame):
 			#send command
 			elif key.vk == libtcod.KEY_UP:
 				if len(self.input_command) < self.max_command_size:
-					self.input_command += chr(30)
+					self.input_command += chr(24)
 			elif key.vk == libtcod.KEY_DOWN:
 				if len(self.input_command) < self.max_command_size:
-					self.input_command += chr(31)
+					self.input_command += chr(25)
 			elif key.vk == libtcod.KEY_LEFT:
 				if len(self.input_command) < self.max_command_size:
-					self.input_command += chr(17)
+					self.input_command += chr(27)
 			elif key.vk == libtcod.KEY_RIGHT:
 				if len(self.input_command) < self.max_command_size:
-					self.input_command += chr(16)
+					self.input_command += chr(26)
 			elif key.vk == libtcod.KEY_ENTER and self.input_command != "":
 				self.add_line_to_history(self.prompt_string + self.input_command)
 				self.frame_manager.parent_menu.handle_input_command(self.input_command)

@@ -212,19 +212,20 @@ class MenuGame(Menu):
 
 #currently pending refactoring into its own structure of some kind, whether that be a class or in-place somewhere above
 global_input_tree = {
-	'q': MenuGame.flag_for_exit,
-	's': MenuGame.save_current_state,
-	'd': MenuGame.dump_entities,
-	'f': MenuGame.save_action_history,
+	'exit': MenuGame.flag_for_exit,
+	'quit': MenuGame.flag_for_exit,
+	'o': MenuGame.save_current_state,
+	'p': MenuGame.save_action_history,
+	'f': MenuGame.dump_entities,
 	'g': MenuGame.dump_entity_manager_state,
 	'h': MenuGame.snapshot_performance
 }
 
 contextual_input_tree = {
-	chr(30): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, -1), 'cost':1}),
-	chr(31): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, 1), 'cost':1}),
-	chr(17): Action(ActionTag.ProgramMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
-	chr(16): Action(ActionTag.ProgramMovement, {'value' : Vec2d(1, 0), 'cost':1}),
+	chr(24): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, -1), 'cost':1}),
+	chr(25): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, 1), 'cost':1}),
+	chr(26): Action(ActionTag.ProgramMovement, {'value' : Vec2d(1, 0), 'cost':1}),
+	chr(27): Action(ActionTag.ProgramMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
 	'e': MenuGame.execute_queued_actions,
-	'a': MenuGame.clear_queued_actions
+	'q': MenuGame.clear_queued_actions
 }
