@@ -12,11 +12,12 @@ from ui_event import UIEvent, UIEventType
 # Displays remaining and queued actions. 
 class FrameActionClock(Frame):
 
-	def __init__(self, root_console_width, root_console_height, frame_manager):
+	def __init__(self, root_console_width, root_console_height, start_y, frame_manager):
 		# constants and initialization
 		self.current_action_count = 0
 		self.max_actions = 0
 		self.highlighted_tile_count = 0
+		self.y_blit_offset = start_y
 		self.entity_manager = frame_manager.parent_menu.entity_manager
 
 		# load xp for bg
@@ -78,4 +79,4 @@ class FrameActionClock(Frame):
 			else:
 				libtcod.console_put_char(self.console, self.queued_actions_display_start[0] + x, self.queued_actions_display_start[1], chr(176))
 
-		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, 0, 0)
+		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, 0, self.y_blit_offset)

@@ -24,7 +24,6 @@ class FramePseudoTerminal(Frame):
 		self.console_command_history = []
 		self.console_max_history_length = terminal_height - 2
 		self.input_enabled = True
-		self.last_command = ""
 
 		Frame.__init__(self, root_console_width, root_console_height, terminal_width, terminal_height, frame_manager)
 		#-1 to account for border tile
@@ -57,7 +56,6 @@ class FramePseudoTerminal(Frame):
 			elif key.vk == libtcod.KEY_ENTER and self.input_command != "":
 				self.add_line_to_history(self.prompt_string + self.input_command)
 				self.frame_manager.parent_menu.handle_input_command(self.input_command)
-				self.last_command = self.input_command
 				self.input_command = ""
 			elif key.vk == libtcod.KEY_BACKSPACE:
 				self.input_command = self.input_command[:-1]
@@ -83,9 +81,6 @@ class FramePseudoTerminal(Frame):
 			#TODO move this into command strings file
 			self.add_line_to_history('Event sequence:')
 			for char in list(event.data['command']):
-				self.last_command = ""
-				self.last_command = char
-				print char
 				self.frame_manager.parent_menu.handle_input_command(char)
 		elif event.type in command_response_table:
 			if 'command' in event.data:

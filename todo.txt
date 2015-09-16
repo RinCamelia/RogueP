@@ -2,7 +2,8 @@ TODO
 
 next:
 
-#write basic WorldFrame rendering for world tiles and walls
+*make a single attack things primitive to go with the move primitives
+*make an innates panel (or just stick it on the library one and make a dummy library panel)
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *create a command details pane

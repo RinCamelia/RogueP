@@ -18,6 +18,7 @@ from ui.frame_world import FrameWorld, WorldRenderType
 from ui.frame_actions_overlay import FrameActionsOverlay
 from ui.frame_action_clock import FrameActionClock
 from ui.frame_pseudo_terminal import FramePseudoTerminal
+from ui.frame_libraries import FrameLibraries
 
 class GameState(Enum):
 	Executing = 1
@@ -76,14 +77,16 @@ class MenuGame(Menu):
 
 		self.frame_manager = FrameManager(self)
 
-		action_clock = FrameActionClock(console_width, console_height, self.frame_manager)
+		libraries = FrameLibraries(console_width, console_height, self.frame_manager)
+		action_clock = FrameActionClock(console_width, console_height, libraries.height, self.frame_manager)
 		world_frame = FrameWorld(console_width, console_height, action_clock.width, action_clock.height, self.frame_manager)
 		world_overlay = FrameActionsOverlay(console_width, console_height, action_clock.width, action_clock.height, self.frame_manager)
 
+		self.frame_manager.add_frame(libraries)
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(world_overlay)
 		self.frame_manager.add_frame(action_clock)
-		self.frame_manager.add_frame(FramePseudoTerminal(console_width, console_height, action_clock.width, console_height - action_clock.height, self.frame_manager))
+		self.frame_manager.add_frame(FramePseudoTerminal(console_width, console_height, action_clock.width, console_height - action_clock.height - libraries.height, self.frame_manager))
 
 
 

@@ -68,7 +68,7 @@ class FrameWorld(Frame):
 		character = '.'
 		if tile_type == WorldTile.Wall:
 			character = '#'
-		libtcod.console_put_char_ex(self.console, x, y, character, libtcod.white, libtcod.black)
+		libtcod.console_put_char_ex(self.console, x, y, character, libtcod.grey, libtcod.black)
 
 	def draw_as_memory(self, entity):
 		entity_position = entity.get_attribute(AttributeTag.WorldPosition).data['value']
