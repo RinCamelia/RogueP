@@ -1,8 +1,10 @@
 import libtcodpy as libtcod
 from model.attribute import AttributeTag
 from ui.frame import Frame
+from model.action import ActionTag
 from vec2d import Vec2d
 from ui.ui_event import UIEventType
+
 
 class FrameActionsOverlay(Frame):
 
@@ -32,9 +34,14 @@ class FrameActionsOverlay(Frame):
 		position_delta = Vec2d(0, 0)
 
 		for queued_action in self.actions:
-			position_delta += queued_action.data['value']
-			draw_info = player.get_attribute(AttributeTag.DrawInfo)
-			target_position = player_position + position_delta
-			libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, chr(draw_info.data['character']), libtcod.blue, libtcod.black)
+			if queued_action.type == ActionTag.ProgramMovement:
+				position_delta += queued_action.data['value']
+				draw_info = player.get_attribute(AttributeTag.DrawInfo)
+				target_position = player_position + position_delta
+				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, chr(draw_info.data['character']), libtcod.blue, libtcod.black)
+			elif queued_action.type == ActionTag.DamagePosition:
+				#for now, assume that player created attack actions are generated with relative positioning
+				target_position = player_position + position_delta + queued_action.data['relative']
+				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, 'X', libtcod.dark_red, libtcod.black)
 
 		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, self.world_x_start, self.world_y_start)

@@ -79,7 +79,10 @@ class FrameWorld(Frame):
 		render_character = self.get_connector_tile(adjacent_memory)
 
 		our_parent_draw_info = our_parent.get_attribute(AttributeTag.DrawInfo)
-		libtcod.console_put_char_ex(self.console, entity_position.x, entity_position.y, chr(render_character), our_parent_draw_info.data['fore_color'], our_parent_draw_info.data['back_color'])
+		back_color = our_parent_draw_info.data['back_color']
+		if entity.get_attribute(AttributeTag.Zeroed):
+			back_color = libtcod.grey
+		libtcod.console_put_char_ex(self.console, entity_position.x, entity_position.y, chr(render_character), our_parent_draw_info.data['fore_color'], back_color)
 
 	def get_adjacent_entities(self, entity, ent_filter=lambda ent: True):
 		entity_position = entity.get_attribute(AttributeTag.WorldPosition).data['value']

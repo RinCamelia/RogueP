@@ -61,12 +61,12 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'draw_type': WorldRenderType.Character, 'z_level': 2})
 					])
 				)
-			for x in range(10):
-				self.entity_manager.add_entity(Entity([
+			#for x in range(10):
+			self.entity_manager.add_entity(Entity([
 							Attribute(AttributeTag.HostileProgram),
 							Attribute(AttributeTag.Visible),
 							Attribute(AttributeTag.OwnedMemory, {'segments':[]}),
-							Attribute(AttributeTag.WorldPosition, {'value': Vec2d(libtcod.random_get_int(0, 5, 45), libtcod.random_get_int(0, 5, 45))}),
+							Attribute(AttributeTag.WorldPosition, {'value': Vec2d(20, 10)}),  #libtcod.random_get_int(0, 5, 45), libtcod.random_get_int(0, 5, 45))}),
 							Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 							Attribute(AttributeTag.ClockRate, {'value': 2}),
 							Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'draw_type': WorldRenderType.Character, 'z_level': 2})
@@ -74,6 +74,8 @@ class MenuGame(Menu):
 					)
 
 			self.try_load_action_history()
+		else:
+			self.entity_manager.parent_menu = self
 
 		self.entity_manager.player_id = 1
 
@@ -155,8 +157,8 @@ class MenuGame(Menu):
 	def try_load_savegame(self):
 		if not os.path.isfile('world.sav'):
 			return False
-		save_file = open('world.sav', 'r')
-		return pickle.load(save_file)
+		reloaded_manager = open('world.sav', 'r')
+		return pickle.load(reloaded_manager)
 
 	def try_load_action_history(self):
 		if not os.path.isfile('action_history.sav'):
@@ -170,7 +172,10 @@ class MenuGame(Menu):
 
 	def save_current_state(self):
 		save_file = open('world.sav', 'w')
+		#remove back-reference, otherwise Bad Things Happen(TM)
+		self.entity_manager.parent_menu = None
 		pickle.dump(self.entity_manager, save_file)
+		self.entity_manager.parent_menu = self
 
 	def save_action_history(self):
 		save_file = open('action_history.sav', 'w')
@@ -229,6 +234,11 @@ contextual_input_tree = {
 	chr(25): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, 1), 'cost':1}),
 	chr(26): Action(ActionTag.ProgramMovement, {'value' : Vec2d(1, 0), 'cost':1}),
 	chr(27): Action(ActionTag.ProgramMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
+	#temporary, will need to be improved by removing hardocded player id etc.
+	'w': Action(ActionTag.DamagePosition, {'relative' : Vec2d(0, -1), 'attacker_id':1, 'cost': 2}),
+	's': Action(ActionTag.DamagePosition, {'relative' : Vec2d(0, 1), 'attacker_id':1, 'cost': 2}),
+	'd': Action(ActionTag.DamagePosition, {'relative' : Vec2d(1, 0), 'attacker_id':1, 'cost': 2}),
+	'a': Action(ActionTag.DamagePosition, {'relative' : Vec2d(-1, 0), 'attacker_id':1, 'cost': 2}),
 	'e': MenuGame.execute_queued_actions,
 	'q': MenuGame.clear_queued_actions
 }

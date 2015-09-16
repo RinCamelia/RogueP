@@ -5,6 +5,9 @@ class ActionTag(Enum):
 	ProgramMovement = 2
 	ProgramMemoryAdd = 3
 	ProgramMemoryRemove = 4
+	DamagePosition = 5
+	DamageProgram = 6
+
 
 class Action:
 	def __str__(self):
@@ -13,3 +16,6 @@ class Action:
 	def __init__(self, type=ActionTag.Base, data={}):
 		self.data = data
 		self.type = type
+
+	def __eq__(self, other):
+		return self.type == other.type #and self.data == other.data

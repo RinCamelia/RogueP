@@ -3,6 +3,7 @@ TODO
 next:
 
 *make a single attack things primitive to go with the move primitives
+*Implement simple health/kill mechanics
 *make a single/simple library (in game concept) and build UI code for display
  *create a library/inventory frame
  *create a command details pane
@@ -12,14 +13,15 @@ next:
 
 short term:
 
+*Move memory segment check behavior into its own behavior
 *Make more use of .xp files and such to initialize UI (also pull in more appropriate styling, i'm more or less ignoring the mockup styles I made for now)
 *either write single info pane UI frame or different kinds of command pane that render over the rest of the UI
  *At this point I'm thinking a bunch of frames and a single dummy frame that renders a BG
-*Implement hardened memory
 *Implement ability for delayed action cascades (i.e. the ability for an action to trigger X queued actions into the future)
 
 medium term:
 
+#Implement hardened memory
 *Write camera tracking code for WorldFrame
 *Revisit introspection to scrape for behaviors
 *explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
@@ -30,11 +32,11 @@ medium term:
 *Re-investigate introspection to scrape for behavior subclasses, or some other non hard coded way
 *Figure out how to set just the foreground or background color of a tile without changing the character (currently thinking I need a layer on the very top and calls into frame manager to queue tile setting)
 *start storing player and world attributes (enemy program stats, library stats, etc.) in configuration files instead of hardcoded (requires finding a data format - probably JSON)
+*Start looking at how to manage mouse input contextually
 
 long term (also known as when im bored and want to work on the game side of game development):
 
 *Test feasibility of non-auto-field of view (IE must scan with libraries to gain information about the world)
-*Start looking at how to manage mouse input contextually
 *create xp sheets for color palettes, display characters, etc.
 *finish drafting title screen and display on main menu
 *begin thinking of distinct program types and mechanics beyond "shoot thing, it dies"
@@ -64,4 +66,4 @@ Completed thus far (started 9/9):
  *this method is cool and relatively idiomatic but also scales horribly
  *Ended up having a by-id list as well as a world tiles list
 *make an innates panel (or just stick it on the library one and make a dummy library panel)
-*
+*reorganize game related frames into game subfolder

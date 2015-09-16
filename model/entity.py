@@ -11,7 +11,7 @@ class Entity:
 		self.attributes = attributes
 
 	def add_attribute(self, attribute):
-		self.attributes.add(attribute)
+		self.attributes.append(attribute)
 
 	def remove_attribute(self, attribute_tag):
 		self.attributes = filter(lambda attr: not attr.tag == attribute_tag, self.attributes)

@@ -13,7 +13,9 @@ def is_hostile_memory(parent_id, ent):
 		return True
 	return False
 
-# Does not actually check for world tiles yet because they don't exist, will add relevant code when I get to implementing them
+def is_program_main_segment(entity):
+	return entity.get_attribute(AttributeTag.Player) != False or entity.get_attribute(AttributeTag.HostileProgram) != False or entity.get_attribute(AttributeTag.NeutralProgram) != False
+
 """
 Takes a list of entities filtered to a single world position and the entity id of the entity checking.
 Returns a bool indicating whether the tile is considered occupied already for the purposes of the entity with ID provided. Checks world tiles, for hostile programs, etc. etc.
@@ -21,4 +23,4 @@ Returns a bool indicating whether the tile is considered occupied already for th
 def entities_occupy_position(parent_id, position_world_data):
 	if position_world_data['tile'] != WorldTile.Empty:
 		return True
-	return len(filter(lambda ent: ent.get_attribute(AttributeTag.HostileProgram) != False or is_hostile_memory(parent_id, ent), position_world_data['entities'])) != 0
+	return len(filter(lambda ent: is_program_main_segment(ent) != False or is_hostile_memory(parent_id, ent), position_world_data['entities'])) != 0

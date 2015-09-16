@@ -19,10 +19,11 @@ class ProgramMovementBehavior(Behavior):
 
 			existing_memory = program.get_attribute(AttributeTag.OwnedMemory).data['segments']
 			new_position_world_data = self.manager.get_world_data_for_position(new_position)
-
+			
 			if position_delta[0] < -1 or position_delta[0] > 1 or position_delta[1] < -1 or position_delta [1] > 1 or (position_delta[0] != 0 and position_delta[1] != 0):
 				raise ValueError('Attempted to process a ProgramMovement action with invalid movement parameters ' + str(position_delta))
 
+			#print new_position_world_data['entities']
 			if not entities_occupy_position(program.id, new_position_world_data) and position_delta != Vec2d(0, 0):
 				# -1 here because the program itself counts for purposes of max memory size
 				if len(filter(lambda ent: is_owned_memory(program.id, ent),  new_position_world_data['entities'])) > 0:

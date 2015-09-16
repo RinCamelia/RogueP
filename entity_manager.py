@@ -3,12 +3,13 @@ from ui.ui_event import UIEvent, UIEventType
 from model.behaviors.behavior_program_movement import ProgramMovementBehavior
 from model.behaviors.behavior_program_memory import ProgramMemoryAddBehavior, ProgramMemoryRemoveBehavior
 from model.behaviors.behavior_ai_randomwalk import AIRandomWalkBehavior
+from model.behaviors.behavior_damage_position import DamagePositionBehavior
 from model.attribute import AttributeTag
 from model.world_tile import WorldTile
 
-#Entity manager does two things right now: 1. manages game state entities (including ID assignment, fetching by ID, and removing by id) and 2: input queue processing when told to by MenuGame
+#Entity manager does two things right now: 1. manages game state entities (including ID assignment, fetching by ID and position, and removing by id) and 2: input queue processing when told to by MenuGame
 #I just moved that code here and thinking back on it, it may not have been strictly necessary, but it makes keeping the internal details of actually mutating model state in one spot
-#Or perhaps I just need to rename this again to ModelManger or something, the alternative is moving open a lot more behavior management functionality to MenuGame
+#Or perhaps I just need to rename this again to ModelManger or something, the alternative is moving a lot more behavior management functionality to MenuGame
 class EntityManager:
 	def __init__(self, parent_menu):
 		self.behaviors = self.get_behaviors()
@@ -19,7 +20,7 @@ class EntityManager:
 		self.parent_menu = parent_menu
 
 		self.update_timer = 0
-		self.update_delay = 10
+		self.update_delay = 250
 		self.queued_actions = []
 		self.action_history = []
 		self.is_executing = False
@@ -45,6 +46,7 @@ class EntityManager:
 		results.append(ProgramMemoryRemoveBehavior(self))
 		results.append(ProgramMovementBehavior(self))
 		results.append(AIRandomWalkBehavior(self))
+		results.append(DamagePositionBehavior(self))
 		return results
 
 	def queue_action(self, action):
