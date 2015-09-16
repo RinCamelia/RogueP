@@ -14,17 +14,20 @@ from model.action import Action, ActionTag
 
 from ui.frame_manager import FrameManager
 from ui.ui_event import UIEvent, UIEventType
-from ui.frame_world import FrameWorld, WorldRenderType
-from ui.frame_actions_overlay import FrameActionsOverlay
-from ui.frame_action_clock import FrameActionClock
-from ui.frame_pseudo_terminal import FramePseudoTerminal
-from ui.frame_libraries import FrameLibraries
+from ui.game.frame_world import FrameWorld, WorldRenderType
+from ui.game.frame_actions_overlay import FrameActionsOverlay
+from ui.game.frame_action_clock import FrameActionClock
+from ui.game.frame_pseudo_terminal import FramePseudoTerminal
+from ui.game.frame_libraries import FrameLibraries
+from ui.game.frame_commands import FrameCommands
 
 class GameState(Enum):
 	Executing = 1
 	TakingInput = 2
 	Loading = 3
 
+#dont like doing globals but until we break away from pure testing mode
+max_actions = 10
 
 # Quasi-controller class
 # This is loaded directly into the main execution stack in my game loop, takes input from the UI and converts it to actual game state mutation or other things like saving or quitting
@@ -34,10 +37,9 @@ class GameState(Enum):
 # Raw input is handled in frame_pseudo_terminal in ui
 class MenuGame(Menu):
 
-	def __init__(self, console_width, console_height):
-		Menu.__init__(self, console_width, console_width)
+	def __init__(self, width, height):
+		Menu.__init__(self, width, height)
 
-		max_actions = 10
 		self.queued_actions_cost_so_far = 0
 		self.action_history = []
 		self.flagged_exit = False
@@ -56,7 +58,7 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(2, 2)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'z_level': 2, 'draw_type': WorldRenderType.Character})
+						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'draw_type': WorldRenderType.Character, 'z_level': 2})
 					])
 				)
 			for x in range(10):
@@ -67,7 +69,7 @@ class MenuGame(Menu):
 							Attribute(AttributeTag.WorldPosition, {'value': Vec2d(libtcod.random_get_int(0, 5, 45), libtcod.random_get_int(0, 5, 45))}),
 							Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 							Attribute(AttributeTag.ClockRate, {'value': 2}),
-							Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'z_level': 2, 'draw_type': WorldRenderType.Character})
+							Attribute(AttributeTag.DrawInfo, {'character': 121, 'fore_color': libtcod.Color(255,0,0), 'back_color': libtcod.black, 'draw_type': WorldRenderType.Character, 'z_level': 2})
 						])
 					)
 
@@ -75,20 +77,24 @@ class MenuGame(Menu):
 
 		self.entity_manager.player_id = 1
 
+		self.init_ui()
+
+	def init_ui(self):
 		self.frame_manager = FrameManager(self)
 
-		libraries = FrameLibraries(console_width, console_height, self.frame_manager)
-		action_clock = FrameActionClock(console_width, console_height, libraries.height, self.frame_manager)
-		world_frame = FrameWorld(console_width, console_height, action_clock.width, action_clock.height, self.frame_manager)
-		world_overlay = FrameActionsOverlay(console_width, console_height, action_clock.width, action_clock.height, self.frame_manager)
+		libraries = FrameLibraries(self.width, self.height, self.frame_manager)
+		action_clock = FrameActionClock(self.width, self.height, libraries.height, self.frame_manager)
+		commands = FrameCommands(self.width, self.height, libraries.width, action_clock.height + libraries.height, self.frame_manager)
+		world_frame = FrameWorld(self.width, self.height, action_clock.width, action_clock.height + libraries.height, self.frame_manager)
+		world_overlay = FrameActionsOverlay(self.width, self.height, action_clock.width, action_clock.height, self.frame_manager)
+		terminal = FramePseudoTerminal(self.width, self.height, action_clock.width, self.height - action_clock.height - libraries.height, self.frame_manager)
 
 		self.frame_manager.add_frame(libraries)
 		self.frame_manager.add_frame(world_frame)
 		self.frame_manager.add_frame(world_overlay)
 		self.frame_manager.add_frame(action_clock)
-		self.frame_manager.add_frame(FramePseudoTerminal(console_width, console_height, action_clock.width, console_height - action_clock.height - libraries.height, self.frame_manager))
-
-
+		self.frame_manager.add_frame(commands)
+		self.frame_manager.add_frame(terminal)
 
 		# generate an initial set of UI events to set up the UI
 		self.frame_manager.handle_ui_event(UIEvent(UIEventType.ActionQueueMaxActionsChange, {'max_actions': max_actions}))

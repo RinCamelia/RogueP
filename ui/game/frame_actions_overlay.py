@@ -1,8 +1,8 @@
 import libtcodpy as libtcod
 from model.attribute import AttributeTag
-from frame import Frame
+from ui.frame import Frame
 from vec2d import Vec2d
-from ui_event import UIEventType
+from ui.ui_event import UIEventType
 
 class FrameActionsOverlay(Frame):
 

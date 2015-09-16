@@ -1,11 +1,11 @@
 import libtcodpy as libtcod
 from model.attribute import AttributeTag
-from frame import Frame
+from ui.frame import Frame
 from vec2d import Vec2d
 from enum import Enum
 from model.entity_utilities import *
 
-class WorldRenderType:
+class WorldRenderType(Enum):
 	Character = 1
 	Memory = 2
 
@@ -108,7 +108,6 @@ class FrameWorld(Frame):
 			render_character = 179
 		elif (adjacent_entities['east'] or adjacent_entities['west']) and not (adjacent_entities['north'] or adjacent_entities['south']):
 			render_character = 196
-
 		elif (adjacent_entities['north'] and adjacent_entities['east']) and not (adjacent_entities['west'] or adjacent_entities['south']):
 			render_character = 192
 		elif (adjacent_entities['south'] and adjacent_entities['east']) and not (adjacent_entities['west'] or adjacent_entities['north']):
@@ -130,8 +129,7 @@ class FrameWorld(Frame):
 
 		return render_character
 
-
 render_type_dict = {
 	WorldRenderType.Character: FrameWorld.draw_as_character,
-	WorldRenderType.Memory: FrameWorld.draw_as_memory,
+	WorldRenderType.Memory: FrameWorld.draw_as_memory
 }

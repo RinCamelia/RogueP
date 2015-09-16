@@ -2,7 +2,7 @@ import libtcodpy as libtcod
 from model.action import ActionTag
 from model.attribute import Attribute, AttributeTag
 from model.entity import Entity
-from ui.frame_world import WorldRenderType
+from ui.game.frame_world import WorldRenderType
 from behavior import Behavior
 
 #note: an explicit from [] import * because if I don't, using entity_utilities functions in lambdas throws a fit
@@ -42,7 +42,7 @@ class ProgramMemoryAddBehavior(Behavior):
 						Attribute(AttributeTag.ProgramMemory, {'parent_id': parent_id}),
 						Attribute(AttributeTag.Visible),
 						Attribute(AttributeTag.WorldPosition, {'value': position}),
-						Attribute(AttributeTag.DrawInfo, {'draw_type': WorldRenderType.Memory, 'z_level': 2})
+						Attribute(AttributeTag.DrawInfo, {'draw_type': WorldRenderType.Memory, 'draw_type': WorldRenderType.Memory, 'z_level': 2})
 					])
 				self.manager.add_entity(memory_segment)
 

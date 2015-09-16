@@ -6,8 +6,8 @@ import xp_loader
 import gzip
 from vec2d import Vec2d
 
-from frame import Frame
-from ui_event import UIEvent, UIEventType
+from ui.frame import Frame
+from ui.ui_event import UIEvent, UIEventType
 
 # Displays remaining and queued actions. 
 class FrameActionClock(Frame):

@@ -7,8 +7,8 @@ import gzip
 from vec2d import Vec2d
 
 from ui.strings.command_responses import command_response_table
-from frame import Frame
-from ui_event import UIEvent, UIEventType
+from ui.frame import Frame
+from ui.ui_event import UIEvent, UIEventType
 
 # pseudoterminal frame - sits on the left and displays current input and input history to the player - primary interface to the actual game
 # also manages keyboard input and generates events to the game state to signal commands

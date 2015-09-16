@@ -1,10 +1,4 @@
-import libtcodpy as libtcod
-from vec2d import Vec2d
-from model.action import ActionTag
-from model.attribute import Attribute, AttributeTag
-from model.entity import Entity
-from math import sqrt, fabs
-from ui.frame_world import FrameWorld
+from model.attribute import AttributeTag
 
 class Behavior(object):
 	def __init__(self, manager):
