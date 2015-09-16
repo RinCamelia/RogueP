@@ -35,6 +35,6 @@ class FrameActionsOverlay(Frame):
 			position_delta += queued_action.data['value']
 			draw_info = player.get_attribute(AttributeTag.DrawInfo)
 			target_position = player_position + position_delta
-			libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, chr(draw_info.data['character']), libtcod.grey, libtcod.black)
+			libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, chr(draw_info.data['character']), libtcod.blue, libtcod.black)
 
 		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, self.world_x_start, self.world_y_start)

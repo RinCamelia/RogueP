@@ -85,9 +85,12 @@ class MenuGame(Menu):
 		libraries = FrameLibraries(self.width, self.height, self.frame_manager)
 		action_clock = FrameActionClock(self.width, self.height, libraries.height, self.frame_manager)
 		commands = FrameCommands(self.width, self.height, libraries.width, action_clock.height + libraries.height, self.frame_manager)
-		world_frame = FrameWorld(self.width, self.height, action_clock.width, action_clock.height + libraries.height, self.frame_manager)
-		world_overlay = FrameActionsOverlay(self.width, self.height, action_clock.width, action_clock.height, self.frame_manager)
+
 		terminal = FramePseudoTerminal(self.width, self.height, action_clock.width, self.height - action_clock.height - libraries.height, self.frame_manager)
+		world_screen_position = Vec2d(action_clock.width, action_clock.height + libraries.height)
+		world_frame = FrameWorld(self.width, self.height, world_screen_position[0], world_screen_position[1], self.frame_manager)
+		world_overlay = FrameActionsOverlay(self.width, self.height, world_screen_position[0], world_screen_position[1], self.frame_manager)
+
 
 		self.frame_manager.add_frame(libraries)
 		self.frame_manager.add_frame(world_frame)
