@@ -33,15 +33,19 @@ class FrameActionsOverlay(Frame):
 		player_position = player.get_attribute(AttributeTag.WorldPosition).data['value']
 		position_delta = Vec2d(0, 0)
 
+		cur_action_number = 1
 		for queued_action in self.actions:
 			if queued_action.type == ActionTag.ProgramMovement:
 				position_delta += queued_action.data['value']
 				draw_info = player.get_attribute(AttributeTag.DrawInfo)
 				target_position = player_position + position_delta
-				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, chr(draw_info.data['character']), libtcod.blue, libtcod.black)
+				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, str(cur_action_number), libtcod.blue, libtcod.black)
 			elif queued_action.type == ActionTag.DamagePosition:
 				#for now, assume that player created attack actions are generated with relative positioning
 				target_position = player_position + position_delta + queued_action.data['relative']
-				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, 'X', libtcod.dark_red, libtcod.black)
+				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, str(cur_action_number), libtcod.dark_red, libtcod.black)
+			cur_action_number += 1
+			if cur_action_number != 0 and cur_action_number == 10:
+				cur_action_number = 0
 
 		libtcod.console_blit(self.console, 0, 0, self.width, self.height, 0, self.world_x_start, self.world_y_start)

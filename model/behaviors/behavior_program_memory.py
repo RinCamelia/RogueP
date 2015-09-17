@@ -17,6 +17,7 @@ class ProgramMemoryRemoveBehavior(Behavior):
 			#will remove multiple copies of memory, best to be safe and do so to trim down on excess floating memory
 			#may shoot me in the foot later if i actually have memory duplication bugs somewhere along the line
 			for entity in memory_at_position:
+
 				parent.get_attribute(AttributeTag.OwnedMemory).data['segments'].remove(entity)
 				self.manager.remove_entity_by_id(entity.id)
 
@@ -35,7 +36,6 @@ class ProgramMemoryAddBehavior(Behavior):
 			parent_id = action.data['parent_id']
 
 			world_data_for_position = self.manager.get_world_data_for_position(position)
-
 			if not entities_occupy_position(parent_id, world_data_for_position):
 				#todo - consider making this an explicit action instead of just chucking it into the manager? for now, this is fine
 				memory_segment = Entity([

@@ -29,24 +29,23 @@ class DamagePositionBehavior(Behavior):
 					#if not, zero a random memory segment
 					owned_segments = entity.get_attribute(AttributeTag.OwnedMemory).data['segments']
 					if len(owned_segments) == 0:
-						self.manager.remove_entity_by_id(entity.id)
+						actions.append(Action(ActionTag.ProgramMemoryRemove, 
+							{'parent_id': entity.id, 'position': position}))
 					else:
 						owned_zeroed_segments = filter(lambda ent: ent.get_attribute(AttributeTag.Zeroed), owned_segments)
 						if len(owned_zeroed_segments) == 0:
-							print len(owned_segments)
 							segment = owned_segments[libtcod.random_get_int(0, 0, len(owned_segments) - 1)]
 							segment.add_attribute(Attribute(AttributeTag.Zeroed))
 						else:
-							print len(owned_zeroed_segments)
-							segment = owned_zeroed_segments[libtcod.random_get_int(0, 0, len(owned_zeroed_segments) - 1)]
-							self.manager.remove_entity_by_id(segment.id)
+							actions.append(Action(ActionTag.ProgramMemoryRemove, 
+								{'parent_id': entity.id, 'position': position}))
 
 				elif entity.get_attribute(AttributeTag.ProgramMemory):
 					if not entity.get_attribute(AttributeTag.Zeroed):
 						entity.add_attribute(Attribute(AttributeTag.Zeroed))
 					else:
 						actions.append(Action(ActionTag.ProgramMemoryRemove, 
-							{'parent_id': entity.get_attribute(AttributeTag.ProgramMemory).data['parent_id'], 'position': entity.get_attribute(AttributeTag.WorldPosition).data['value']}))
+							{'parent_id': entity.get_attribute(AttributeTag.ProgramMemory).data['parent_id'], 'position': position}))
 				else:
 					#???
 					pass
