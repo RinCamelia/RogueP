@@ -4,7 +4,7 @@ import pickle
 from menu import Menu
 from enum import Enum
 from vec2d import Vec2d
-from entity_manager import EntityManager
+from model.entity_manager import EntityManager
 
 from menu_manager import MenuStatus
 

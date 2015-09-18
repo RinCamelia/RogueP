@@ -2,9 +2,8 @@ TODO
 
 next:
 
-*make a single attack things primitive to go with the move primitives
-*Implement simple health/kill mechanics
 *make a single/simple library (in game concept) and build UI code for display
+ *figure out UI modal input and whether i need to move any more code out of menugame (also if i do, what the hell it's going to be good for other than an intermediary)
  *create a library/inventory frame
  *create a command details pane
  *hard code a single library for now
@@ -13,6 +12,7 @@ next:
 
 short term:
 
+*parsing an xp file into world data (initially whole world for various tests - then later move to prefabs that can be injected into worldgen)
 *Move memory segment check behavior into its own behavior
 *Make more use of .xp files and such to initialize UI (also pull in more appropriate styling, i'm more or less ignoring the mockup styles I made for now)
 *either write single info pane UI frame or different kinds of command pane that render over the rest of the UI
@@ -67,3 +67,5 @@ Completed thus far (started 9/9):
  *Ended up having a by-id list as well as a world tiles list
 *make an innates panel (or just stick it on the library one and make a dummy library panel)
 *reorganize game related frames into game subfolder
+*make a single attack things primitive to go with the move primitives
+*Implement simple health/kill mechanics
