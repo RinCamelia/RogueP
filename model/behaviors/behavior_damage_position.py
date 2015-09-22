@@ -14,7 +14,7 @@ class DamagePositionBehavior(Behavior):
 		if action.type == ActionTag.DamagePosition:
 			attacker = self.manager.get_entity_by_id(action.data['attacker_id'])
 			position = None
-
+			
 			if 'relative' in action.data:
 				position = attacker.get_attribute(AttributeTag.WorldPosition).data['value'] + action.data['relative']
 			else:

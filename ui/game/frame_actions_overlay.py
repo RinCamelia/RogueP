@@ -41,8 +41,11 @@ class FrameActionsOverlay(Frame):
 				target_position = player_position + position_delta
 				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, str(cur_action_number), libtcod.blue, libtcod.black)
 			elif queued_action.type == ActionTag.DamagePosition:
-				#for now, assume that player created attack actions are generated with relative positioning
-				target_position = player_position + position_delta + queued_action.data['relative']
+				target_position = None
+				if 'relative' in queued_action.data:
+					target_position = player_position + position_delta + queued_action.data['relative']
+				else: #assume there's an absolute position listed. proibably should be generating a nice error here but that can be done soon(TM)
+					target_position = queued_action.data['absolute']
 				libtcod.console_put_char_ex(self.console, target_position.x, target_position.y, str(cur_action_number), libtcod.dark_red, libtcod.black)
 			cur_action_number += 1
 			if cur_action_number != 0 and cur_action_number == 10:

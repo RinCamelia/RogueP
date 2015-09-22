@@ -15,32 +15,24 @@ class FrameManager:
 		self.should_measure = False
 
 	def add_frame(self, frame):
-		self.frames.append({
-				'frame':frame,
-				'visible':True
-			})
+		self.frames.append(frame)
 
 	def handle_ui_event(self, event):
 		for frame in self.frames:
-			frame['frame'].handle_ui_event(event)
+			frame.handle_ui_event(event)
 
 	def update(self, delta):
 		for frame in self.frames:
-			status = frame['frame'].update(delta)
+			status = frame.update(delta)
 			if status == FrameState.Remove:
 				self.frames.remove(frame)
-			elif status == FrameState.Hide:
-				frame['visible'] = False
-			elif status == FrameState.Show:
-				frame['visible'] = True
 
 
 	def draw(self):
 		total_milli = 0
 		for frame in self.frames:
 			pre_action_milli = libtcod.sys_elapsed_milli()
-			if frame['visible']:
-				frame['frame'].draw()
+			frame.draw()
 			post_action_milli = libtcod.sys_elapsed_milli()
 			if self.should_measure:
 				print 'Frame ' + frame['frame'].__class__.__name__ + ' took ' + str(post_action_milli - pre_action_milli) + ' MS to draw'

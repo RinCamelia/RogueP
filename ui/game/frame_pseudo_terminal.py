@@ -37,28 +37,47 @@ class FramePseudoTerminal(Frame):
 		self.update_blinky_cursor(delta)
 
 		if self.input_enabled:
-			if key.vk == libtcod.KEY_CHAR:
-				if len(self.input_command) < self.max_command_size:
-						self.input_command += chr(key.c)
-			#send command
-			elif key.vk == libtcod.KEY_UP:
-				if len(self.input_command) < self.max_command_size:
+
+			if len(self.input_command) < self.max_command_size:
+				if key.vk == libtcod.KEY_CHAR:
+					self.input_command += chr(key.c)
+				#add numbers, because these are separate keycodes for some godforsaken reason
+				#really, libtcod?
+				elif key.vk == libtcod.KEY_0:
+					self.input_command += '0'
+				elif key.vk == libtcod.KEY_1:
+					self.input_command += '1'
+				elif key.vk == libtcod.KEY_2:
+					self.input_command += '2'
+				elif key.vk == libtcod.KEY_3:
+					self.input_command += '3'
+				elif key.vk == libtcod.KEY_4:
+					self.input_command += '4'
+				elif key.vk == libtcod.KEY_5:
+					self.input_command += '5'
+				elif key.vk == libtcod.KEY_6:
+					self.input_command += '6'
+				elif key.vk == libtcod.KEY_7:
+					self.input_command += '7'
+				elif key.vk == libtcod.KEY_8:
+					self.input_command += '8'
+				elif key.vk == libtcod.KEY_9:
+					self.input_command += '9'
+				elif key.vk == libtcod.KEY_UP:
 					self.input_command += chr(24)
-			elif key.vk == libtcod.KEY_DOWN:
-				if len(self.input_command) < self.max_command_size:
+				elif key.vk == libtcod.KEY_DOWN:
 					self.input_command += chr(25)
-			elif key.vk == libtcod.KEY_LEFT:
-				if len(self.input_command) < self.max_command_size:
+				elif key.vk == libtcod.KEY_LEFT:
 					self.input_command += chr(27)
-			elif key.vk == libtcod.KEY_RIGHT:
-				if len(self.input_command) < self.max_command_size:
+				elif key.vk == libtcod.KEY_RIGHT:
 					self.input_command += chr(26)
-			elif key.vk == libtcod.KEY_ENTER and self.input_command != "":
-				self.add_line_to_history(self.prompt_string + self.input_command)
-				self.frame_manager.parent_menu.handle_input_command(self.input_command)
-				self.input_command = ""
-			elif key.vk == libtcod.KEY_BACKSPACE:
-				self.input_command = self.input_command[:-1]
+			#send command
+				elif key.vk == libtcod.KEY_ENTER and self.input_command != "":
+					self.add_line_to_history(self.prompt_string + self.input_command)
+					self.frame_manager.parent_menu.handle_input_command(self.input_command)
+					self.input_command = ""
+				elif key.vk == libtcod.KEY_BACKSPACE:
+					self.input_command = self.input_command[:-1]
 
 	def update_blinky_cursor(self, delta):
 		self.cursor_timer += delta

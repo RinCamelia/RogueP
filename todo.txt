@@ -2,6 +2,15 @@ TODO
 
 next:
 
+*minimally expand input tree to properly support contextual input
+*make blank library infor panel bg
+ *improve position keying color scheme
+ *write XPLoader position key extractor
+*remove superfluous visibility system in frame manager
+*rename frame manager to UI manager
+*rewrite input to generate specific distinct events to the game class, not just feed raw input lines
+ *this allows more input to be handled at the UI level and menu to only care about the semantics of what the player is telling it to do
+
 *make a single/simple library (in game concept) and build UI code for display
  *figure out UI modal input and whether i need to move any more code out of menugame (also if i do, what the hell it's going to be good for other than an intermediary)
  *create a library/inventory frame
@@ -18,11 +27,13 @@ short term:
 *either write single info pane UI frame or different kinds of command pane that render over the rest of the UI
  *At this point I'm thinking a bunch of frames and a single dummy frame that renders a BG
 *Implement ability for delayed action cascades (i.e. the ability for an action to trigger X queued actions into the future)
+*Write camera tracking code for WorldFrame
+*Figure out how to set just the foreground or background color of a tile without changing the character (currently thinking I need a layer on the very top and calls into frame manager to queue tile setting)
 
 medium term:
 
+*Test feasibility of non-auto-field of view (IE must scan with libraries to gain information about the world)
 #Implement hardened memory
-*Write camera tracking code for WorldFrame
 *Revisit introspection to scrape for behaviors
 *explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
  *Testing note: Tried dynamic world wall calculation. Failed spectacularly on performance grounds. 
@@ -30,13 +41,11 @@ medium term:
 *Break out world generation into its own code once I get that far (again, to reduce size on MenuGame.__init)
 *Pull out saving code into more distinct code path to support things like RNG initialization and such
 *Re-investigate introspection to scrape for behavior subclasses, or some other non hard coded way
-*Figure out how to set just the foreground or background color of a tile without changing the character (currently thinking I need a layer on the very top and calls into frame manager to queue tile setting)
 *start storing player and world attributes (enemy program stats, library stats, etc.) in configuration files instead of hardcoded (requires finding a data format - probably JSON)
 *Start looking at how to manage mouse input contextually
 
 long term (also known as when im bored and want to work on the game side of game development):
 
-*Test feasibility of non-auto-field of view (IE must scan with libraries to gain information about the world)
 *create xp sheets for color palettes, display characters, etc.
 *finish drafting title screen and display on main menu
 *begin thinking of distinct program types and mechanics beyond "shoot thing, it dies"
