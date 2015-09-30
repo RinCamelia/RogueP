@@ -2,22 +2,11 @@ TODO
 
 next:
 
-*minimally expand input tree to properly support contextual input
-*make blank library infor panel bg
- *improve position keying color scheme
- *write XPLoader position key extractor
-*remove superfluous visibility system in frame manager
 *rename frame manager to UI manager
-*rewrite input to generate specific distinct events to the game class, not just feed raw input lines
- *this allows more input to be handled at the UI level and menu to only care about the semantics of what the player is telling it to do
-
-*make a single/simple library (in game concept) and build UI code for display
- *figure out UI modal input and whether i need to move any more code out of menugame (also if i do, what the hell it's going to be good for other than an intermediary)
- *create a library/inventory frame
- *create a command details pane
- *hard code a single library for now
-  *where to put the code? probably in behaviors
- *most, if not all, libraries will require additional world elements to interact with, so this may have to wait for a good deal of time
+*break library code out from hardcoding
+ *This will require a new structure, put it in a new 'config' or 'data' folder
+ *figure out sensible implementation to siphon out 
+ *this, quite sadly, runs afoul of the issue behaviors do, that being that I'll need to add code every time i make a new one
 
 short term:
 
@@ -29,12 +18,18 @@ short term:
 *Implement ability for delayed action cascades (i.e. the ability for an action to trigger X queued actions into the future)
 *Write camera tracking code for WorldFrame
 *Figure out how to set just the foreground or background color of a tile without changing the character (currently thinking I need a layer on the very top and calls into frame manager to queue tile setting)
+*Start looking at how to manage mouse input contextually
 
 medium term:
 
+*figure out memory display marking - only along world edges, make player do a minimal amount of legwork figuring out addresses for input to manual function calls
+*allow libraries to be dropped as a game entity so you can pick them up
+*allow swapping in and out of libraries
+*allow library deletion from memory
 *Test feasibility of non-auto-field of view (IE must scan with libraries to gain information about the world)
-#Implement hardened memory
+*Implement hardened memory
 *Revisit introspection to scrape for behaviors
+ *and now libraries too
 *explore options for world generation (how? what kind of world do I want to generate? will there be levels or is it continuous? etc.)
  *Testing note: Tried dynamic world wall calculation. Failed spectacularly on performance grounds. 
 *Decide an explicit place for UI initialization code to minimize the burden on having a ridiculously huge MenuGame.__init__
@@ -42,14 +37,16 @@ medium term:
 *Pull out saving code into more distinct code path to support things like RNG initialization and such
 *Re-investigate introspection to scrape for behavior subclasses, or some other non hard coded way
 *start storing player and world attributes (enemy program stats, library stats, etc.) in configuration files instead of hardcoded (requires finding a data format - probably JSON)
-*Start looking at how to manage mouse input contextually
 
 long term (also known as when im bored and want to work on the game side of game development):
 
+*do something about the fact that the "logic" folder is not particularly logic-y and really only holds menu classes
 *create xp sheets for color palettes, display characters, etc.
 *finish drafting title screen and display on main menu
 *begin thinking of distinct program types and mechanics beyond "shoot thing, it dies"
 *explore options for animation(whether procedural or preloaded from .xp)
+*Consider having an auto-given library provide what are now innates, and/or just moving basic attack commands to libraries
+*come up with additional types of interaction mechanics (attack and beyond)
 
 
 Completed thus far (started 9/9):
@@ -78,3 +75,9 @@ Completed thus far (started 9/9):
 *reorganize game related frames into game subfolder
 *make a single attack things primitive to go with the move primitives
 *Implement simple health/kill mechanics
+*minimally expand input tree to properly support contextual input
+ *create a library/inventory frame
+ *improve position keying color scheme
+ *write XPLoader position key extractor
+*make blank library infor panel bg
+*remove superfluous visibility system in frame manager

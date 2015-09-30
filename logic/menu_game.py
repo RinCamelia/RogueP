@@ -11,6 +11,8 @@ from menu_manager import MenuStatus
 from model.attribute import Attribute, AttributeTag
 from model.entity import Entity
 from model.action import Action, ActionTag
+from model.function import Function
+from model.library import Library
 
 from ui.frame_manager import FrameManager
 from ui.ui_event import UIEvent, UIEventType
@@ -20,6 +22,8 @@ from ui.game.frame_action_clock import FrameActionClock
 from ui.game.frame_pseudo_terminal import FramePseudoTerminal
 from ui.game.frame_libraries import FrameLibraries
 from ui.game.frame_commands import FrameCommands
+
+import config.game_functions
 
 class GameState(Enum):
 	Executing = 1
@@ -48,7 +52,16 @@ class MenuGame(Menu):
 		self.flagged_exit = False
 		self.entity_manager = None
 		self.game_state = GameState.TakingInput
-		self.current_input_tree = contextual_input_tree
+		self.current_input_tree = innates_input_tree
+
+		player_hardcoded_libraries = [
+			Library(
+					'atk',
+					'temporary test library',
+					[config.game_functions.master_available_functions[0]]
+				)
+		]
+
 
 		#try and load a save game. if that fails, initialize a baseline entity manager and try to feed in an action history. If both fail, the game simply ends up in a newgame state
 		self.entity_manager = self.try_load_savegame()
@@ -62,7 +75,8 @@ class MenuGame(Menu):
 						Attribute(AttributeTag.WorldPosition, {'value': Vec2d(2, 2)}),
 						Attribute(AttributeTag.MaxProgramSize, {'value': 5}),
 						Attribute(AttributeTag.ClockRate, {'value': 2}),
-						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'draw_type': WorldRenderType.Character, 'z_level': 2})
+						Attribute(AttributeTag.DrawInfo, {'character': 64, 'fore_color': libtcod.Color(157,205,255), 'back_color': libtcod.black, 'draw_type': WorldRenderType.Character, 'z_level': 2}),
+						Attribute(AttributeTag.Libraries, {'value': player_hardcoded_libraries})
 					])
 				)
 			#for x in range(10):
@@ -156,6 +170,7 @@ class MenuGame(Menu):
 
 	def handle_input_command(self, input_command):
 		if self.game_state == GameState.TakingInput:
+			player_available_libraries = self.entity_manager.get_entity_by_id(self.entity_manager.player_id).get_attribute(AttributeTag.Libraries)
 			#more todo: catch special commands like __# and such properly
 			#generate UI events for library data
 			if input_command in self.current_input_tree:
@@ -265,15 +280,12 @@ global_input_tree = {
 	'h': MenuGame.snapshot_performance
 }
 
-contextual_input_tree = {
+
+innates_input_tree = {
 	chr(24): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, -1), 'cost':1}),
 	chr(25): Action(ActionTag.ProgramMovement, {'value' : Vec2d(0, 1), 'cost':1}),
 	chr(26): Action(ActionTag.ProgramMovement, {'value' : Vec2d(1, 0), 'cost':1}),
 	chr(27): Action(ActionTag.ProgramMovement, {'value' : Vec2d(-1, 0), 'cost':1}),
-	'atk': {
-		'q': MenuGame.reset_input_tree,
-		'__#': MenuGame.generate_atk_action
-	},
 	#temporary, will need to be improved by removing hardocded player id etc.
 	'w': Action(ActionTag.DamagePosition, {'relative' : Vec2d(0, -1), 'attacker_id':1, 'cost': 2}),
 	's': Action(ActionTag.DamagePosition, {'relative' : Vec2d(0, 1), 'attacker_id':1, 'cost': 2}),

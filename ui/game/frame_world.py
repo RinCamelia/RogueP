@@ -10,8 +10,8 @@ class WorldRenderType(Enum):
 	Memory = 2
 
 # Draws world state to the screen
-# If you want input management, see frame_pseudo_terminal
-# If you want input processing and initialization, see menu_game in logic
+# If you want raw input processing, see frame_pseudo_terminal
+# If you want input state management, see menu_game in logic
 # if you want to see the world state objects and behaviors, see the model folder
 class FrameWorld(Frame):
 

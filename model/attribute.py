@@ -10,9 +10,11 @@ class AttributeTag(Enum):
 	DrawInfo = 7
 	WorldPosition = 8
 	MaxProgramSize = 9
-	ClockRate = 10,
-	Zeroed = 11,
+	ClockRate = 10
+	Zeroed = 11
 	OwnedMemory = 12
+	Libraries = 13
+
 
 class Attribute:
 	def __str__(self):
